@@ -19,7 +19,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 
 
-const AllUser = ({ navigation }) => {
+const ChefScreen = ({ navigation }) => {
 
     const token = useSelector((state) => state.auth.token);
     const [ user, setUser ] = useState([]);
@@ -178,4 +178,4 @@ const AllUser = ({ navigation }) => {
     );
 }
 
-export default AllUser
+export default ChefScreen;

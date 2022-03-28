@@ -2,10 +2,9 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from '../screens/Home';
-import Post from '../screens/Post';
 import Settings from './settings';
 import Gallery from '../screens/Gallery'
-import UserCard from "../screens/UserScreen";
+import Chef from "../screens/Chef";
 
 import * as theme from '../style/theme';
 import TabIcon from "../components/TabIcon";
@@ -44,15 +43,15 @@ const Tabs = () => {
                 component={Gallery}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
-                    {focused} icon={require('../assets/icons/addpost.png')} />
+                    {focused} icon={require('../assets/icons/recipe.png')} />
                 }}
             />
             <Tab.Screen
-                name="Users"
-                component={UserCard}
+                name="Chefs"
+                component={Chef}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
-                    {focused} icon={require('../assets/icons/recipe.png')} />
+                    {focused} icon={require('../assets/icons/chef.png')} />
                 }}
             />
             <Tab.Screen

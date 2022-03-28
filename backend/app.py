@@ -176,7 +176,7 @@ jwt = JWT(app, authenticate, identity)
 @app.route("/users", methods=['GET'])
 def get_users():
     all_users = User.query.all()
-
+    
     result = users_schema.dump(all_users)
     
     return jsonify({ 'users':result })
@@ -206,7 +206,7 @@ def add_user():
     return jsonify({ "Success": "New user " + username + " created" }), 201
 
 
-@app.route("/edit_user/<int:id>", methods=['PUT', 'DELETE'])
+@app.route("/edit_user", methods=['PUT', 'DELETE'])
 @jwt_required()
 def edit_user():
     # blog = Blog.query.filter_by(id=id).first_or_404()
@@ -312,11 +312,11 @@ def get_all_blogs():
 @app.route('/blog/<int:id>',methods=["GET"])
 def get_single_blog(id):
     blog = Blog.query.filter_by(id=id).first()
-    
+    likes = Like.query.all()
     
     result = blog_schema.dump(blog)
         
-    return jsonify({"single_blog": result})
+    return jsonify({'single_blog': result, 'likesCount': len(likes)})
 
 
 # Update Blog
@@ -471,8 +471,9 @@ def search():
 @app.route('/whoami')
 @jwt_required()
 def auth():
-    myRecipe = Blog.query.filter_by(author=current_identity.username)
-    results = blogs_schema.dump(myRecipe)
+    count = Blog.query.filter_by(author=current_identity.username)
+    results = blogs_schema.dump(count)
+    
     return jsonify({
         "user_id": current_identity.id,
         "username": current_identity.username,
