@@ -5,6 +5,7 @@ const UPLOAD_PROFILEIMAGE = "upload_profileimage";
 const UPLOAD_DATE_JOINED = "upload_date_joined";
 const UPLOAD_COUNT = "upload_count";
 const UPLOAD_BLOGS = "upload_blogs";
+// const UPLOAD_GALBLOGS = "upload_galblogs";
 
 
 
@@ -15,6 +16,7 @@ const initialState = {
     date_joined: "",
     count: "",
     blogs: "",
+    // galblogs: ""
 };
 
 export function changeModeAction() {
@@ -45,6 +47,10 @@ export function uploadCountAction() {
     return { type: UPLOAD_COUNT }
 }
 
+// export function upload_galblogsAction() {
+//     return { type: UPLOAD_GALBLOGS }
+// }
+
 export default function accountPrefReducer(state = initialState, action) {
     switch (action.type) {
         case UPLOAD_USER_ID:
@@ -58,7 +64,9 @@ export default function accountPrefReducer(state = initialState, action) {
         case UPLOAD_BLOGS:
             return { ...state, blogs: action.payload }
         case UPLOAD_COUNT:
-            return { ...state, count: action.payload }        
+            return { ...state, count: action.payload }
+        // case UPLOAD_GALBLOGS:
+        //     return { ...state, count: action.payload }        
         default:
             return state;
     }

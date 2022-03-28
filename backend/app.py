@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, ValidationError, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, SQLAlchemySchema, auto_field
+from marshmallow_sqlalchemy.fields import Nested
 from flask_jwt import JWT, jwt_required, current_identity
 import os
 import base64
@@ -67,7 +68,7 @@ class Blog(db.Model):
     ingredients = db.relationship('Ingredient', secondary=ingredient_blog, backref=db.backref('blogs_associated', lazy="dynamic"))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     category = db.relationship('Category', backref = db.backref('blogs', lazy=True)) 
-    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('user.username', ondelete='CASCADE'), nullable=False)
     comments = db.relationship('Comment', backref='post_comment', cascade='all,delete-orphan', lazy=True)
     likes = db.relationship('Like', backref='post', cascade='all,delete-orphan', lazy=True)   
 
@@ -81,7 +82,7 @@ class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
-    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('user.username', ondelete='CASCADE'), nullable=False)
     
 
 class Comment(db.Model):
@@ -89,7 +90,7 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
     content = db.Column(db.String(200))
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
-    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('user.username', ondelete='CASCADE'), nullable=False)
     
 
 class IngredientName(fields.Field):
@@ -113,31 +114,58 @@ class LikeSchema(ma.Schema):
 class IngredientSchema(ma.Schema):
     id = fields.Int()
     item = fields.Str()
+
+
+class UserSchema1(SQLAlchemyAutoSchema):
+    # blogs = fields.List(fields.Nested(BlogSchema(only=('title','image'))))
+    
+    class Meta:
+        fields = ('id', 'username', 'profileImage', 'date_joined')
+        # model = User
+        # include_relationships = True
+        # load_instance = True
+            
     
 class BlogSchema(SQLAlchemyAutoSchema):
-    ordered = True
     category = fields.Nested(CategorySchema(only=("name", "id")))
     ingredients = fields.List(IngredientName(only=("item",), many=True))
     comments = fields.List(fields.Nested(CommentSchema(only=("content", "author"))))
     likes = fields.List(fields.Nested(LikeSchema(only=("author",))))
+    authors = fields.List(fields.Nested(UserSchema1, many=True, only=("profileImage",)))
     
     class Meta:
-        fields = ('id', 'title', 'instruction', 'image', 'author', 'category', 'likes',
-                  'ingredients', 'serving', 'duration', 'created_at', 'updated_at', 'comments'
-                  'author_name', 'author_profileImage')
+        ordered: True
+        
+        fields = ('id', 'title', 'instruction', 'image', 'authors', 'category', 'likes',
+                  'ingredients', 'serving', 'duration', 'created_at', 'updated_at', 'comments', 'authors')
         
 
 class UserSchema(SQLAlchemyAutoSchema):
-    blogs = fields.List(fields.Nested(BlogSchema(only=('title','image'))))
+    # blogs = fields.List(fields.Nested(BlogSchema(only=('title','image'))))
     
     class Meta:
-        fields = ('id', 'username', 'email', 'profileImage', 'blogs', 'date_joined')
+        # fields = ('id', 'username', 'email', 'profileImage', 'blogs', 'date_joined')
+        model = User
+        include_relationships = True
+        load_instance = True
+    
 
+class BlogSchema2(SQLAlchemyAutoSchema):  
+       
+    class Meta:
+        # fields = ('id', 'title', 'image', 'created_at', 'authors')
+        model = Blog
+        include_fk = True
+        load_instance = True
+        
+    authors = Nested(UserSchema(only=('username', 'profileImage')))
+    
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)            
 blog_schema = BlogSchema()
 blogs_schema = BlogSchema(many=True) 
-comments_schema = CommentSchema(many=True)    
+comments_schema = CommentSchema(many=True)
+blogs_schema2 = BlogSchema2(many=True)    
 
            
 db.create_all()
@@ -161,7 +189,8 @@ def get_users():
     all_users = User.query.all()
 
     result = users_schema.dump(all_users)
-    return jsonify({'users':result})
+    
+    return jsonify({ 'users':result })
 
 
 # Create new user
@@ -188,9 +217,9 @@ def add_user():
     return jsonify({ "Success": "New user " + username + " created" }), 201
 
 
-@app.route("/edit_user", methods=['PUT', 'DELETE'])
+@app.route("/edit_user/<int:id>", methods=['PUT', 'DELETE'])
 @jwt_required()
-def edit_user():
+def edit_user(id):
     # blog = Blog.query.filter_by(id=id).first_or_404()
     user = User.query.filter_by(id=current_identity.id).first_or_404()
     if not user:
@@ -240,7 +269,7 @@ def add_blog():
     image = imageFileName
     
     new_blog = Blog(title=data["title"],instruction=data["instruction"],serving=data["serving"],image=imageFileName,
-                    duration=data["duration"],category_id=data["category_id"],author=current_identity.id)
+                    duration=data["duration"],category_id=data["category_id"],author=current_identity.username)
         
     
     for ingredient in data["ingredients"]:
@@ -280,6 +309,15 @@ def get_all_blogs():
     
     return jsonify({"allblogs": results})
     
+# Get all Blogs for gallery  
+@app.route('/gallery',methods=["GET"])
+def get_gallery():
+    allblogs = Blog.query.order_by(Blog.created_at.desc()).all()
+       
+    results = blogs_schema2.dump(allblogs)
+    
+    return jsonify({"gal_blogs": results})
+
 
 # Get Blog by id
 @app.route('/blog/<int:id>',methods=["GET"])
@@ -336,7 +374,7 @@ def update_blog(id):
 @jwt_required()
 def delete_blog(id):
     blog = Blog.query.filter_by(id=id).first()
-    user = current_identity.id
+    user = current_identity.username
     if user != blog.author:
         return jsonify({ "Error": "user not authorised!" }),401
     
@@ -367,7 +405,7 @@ def delete_user(id):
 @jwt_required()
 def like(blog_id):
     blog = Blog.query.get(blog_id)
-    like = Like.query.filter_by(author=current_identity.id, blog_id=blog_id).first()
+    like = Like.query.filter_by(author=current_identity.username, blog_id=blog_id).first()
     
     if not blog:
         return jsonify({"Message": "Post does not exist"})
@@ -376,7 +414,7 @@ def like(blog_id):
         db.session.commit() 
         return jsonify({"Message": "Post like removed"})   
     else:
-        like = Like(author=current_identity.id, blog_id=blog_id)
+        like = Like(author=current_identity.username, blog_id=blog_id)
         db.session.add(like)
         db.session.commit()
         
@@ -396,14 +434,14 @@ def add_comment(blog_id):
         # post = Post.query.filter_by_or_404(id=post_id).first()
         post = Blog.query.get_or_404(blog_id)
         comment = Comment.query.filter_by(blog_id=blog_id).all()
-        current_user_comments = Comment.query.filter_by(blog_id=blog_id,author=current_identity.id).first()
+        current_user_comments = Comment.query.filter_by(blog_id=blog_id,author=current_identity.username).first()
         if current_user_comments:
             return jsonify({"Message": "You can only comment once."})
         else:
             if post:
                 comment = Comment(
                     content=content, 
-                    author=current_identity.id, 
+                    author=current_identity.username, 
                     blog_id=blog_id
                 )
                 
@@ -459,7 +497,7 @@ def auth():
 @app.route('/posts/me', methods=['GET'])
 @jwt_required()
 def my_post():
-    myRecipe = Blog.query.filter_by(author=current_identity.id).all()
+    myRecipe = Blog.query.filter_by(author=current_identity.username).all()
     results = blogs_schema.dump(myRecipe)
 
     return jsonify({'posts':results})

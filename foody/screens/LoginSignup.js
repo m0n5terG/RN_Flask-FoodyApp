@@ -1,210 +1,313 @@
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import {
+    ImageBackground,
+    StyleSheet,
+    SafeAreaView,
+    View,
+    Text,
+    
+    TouchableOpacity,
+    UIManager,
+    LayoutAnimation,
+    ActivityIndicator,
+    Keyboard,
+} from "react-native";
+import { API, API_LOGIN, API_SIGNUP } from "../constants/API";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { logInAction } from "../redux/ducks/blogAuth";
+import loggedInUser from "../constants/loggedInUser";
+import { TextInput, } from "react-native-paper";
 
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, UIManager, LayoutAnimation, ActivityIndicator, Keyboard } from 'react-native';
-import { API, API_LOGIN, API_SIGNUP } from '../constants/API';
-//import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { logInAction } from '../redux/ducks/blogAuth';
-import loggedInUser from '../constants/loggedInUser';
+import * as theme from "../style/theme";
 
-import * as theme from '../style/theme';
-
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+if (
+    Platform.OS === "android" &&
+    UIManager.setLayoutAnimationEnabledExperimental
+    ) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
-} //Needs to be manually enabled for android
+}
 
-export default function LoginSignup({ navigation }) {
+function LoginSignup({ navigation }) {
 
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [loading, setLoading] = useState(false)
-    const [errorText, setErrorText] = useState('')
-    const [isLogin, setIsLogin] = useState(true)
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [errorText, setErrorText] = useState("");
+    const [isLogin, setIsLogin] = useState(true);
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     async function login() {
         console.log("---- Login time ----");
         Keyboard.dismiss();
-        
-            try {
-                setLoading(true);
-                const response = await axios.post(API + API_LOGIN, {
-                  username,
-                  password,
-                });
-                console.log("Success logging in!");
-                console.log(response.data.access_token);
-
-
-                dispatch({...logInAction(), payload: response.data.access_token})
-                
-                loggedInUser(dispatch, response.data.access_token);
-                
-                setUsername("")
-                setPassword("")
-                setLoading(false);
-                navigation.navigate("Home");
-              } catch (error) {
-                setLoading(false);
-                console.log("Error logging in!");
-                console.log(error);
-                setErrorText(error.response.data.description);
-              }
-    }
     
-    async function signUp() {
-        if (password != confirmPassword) {
-            setErrorText("Your passwords don't match. Check and try again.")
-        } else {
-            try {
-                setLoading(true);
+        try {
+            setLoading(true);
+            const response = await axios.post(API + API_LOGIN, {
+                username,
+                password,
+            });
+            console.log("Success logging in!");
+            console.log(response.data.access_token);
+        
+            dispatch({ ...logInAction(), payload: response.data.access_token });
+        
+            loggedInUser(dispatch, response.data.access_token);
+        
+            setUsername("");
+            setPassword("");
+            setLoading(false);
+
+            navigation.navigate("Home");
+
+            } catch (error) {
+            setLoading(false);
+            console.log("Error logging in!");
+            console.log(error);
+            setErrorText(error.response.data.description);
+            }
+        }
+
+        async function signUp() {
+            if (password != confirmPassword) {
+                setErrorText("Your passwords don't match. Check and try again.");
+            } else {
+                try {
+                    setLoading(true);
                     const response = await axios.post(API + API_SIGNUP, {
-                        username,
-                        email,
-                        password,
+                    username,
+                    email,
+                    password,
                     });
                     if (response.data.Error) {
-                        // We have an error message for if the user already exists
-                        setErrorText(response.data.Error);
-                        setLoading(false);
+                    // We have an error message for if the user already exists
+                    setErrorText(response.data.Error);
+                    setLoading(false);
                     } else {
-                        console.log("Success signing up!");
-                        setLoading(false);
-                        login();
+                    console.log("Success signing up!");
+                    setLoading(false);
+                    login();
                     }
-                  } catch (error) {
+                } catch (error) {
                     setLoading(false);
                     console.log("Error logging in!");
                     console.log(error.response);
                     setErrorText(error.response.data.description);
-                    if (error.response.status = 404) {
-                        setErrorText("No such User!")
+                    if ((error.response.status = 404)) {
+                    setErrorText("No such User!");
                     }
+                }
             }
         }
+
+    function renderInput () {
+        return (     
+            <View 
+                style={{
+                    flex: 1
+                }}
+            >
+                <View
+                    style={{
+                        width: 300,
+                        height: 50,
+                        marginTop: 30,                 
+                    }}
+                >
+                    <TextInput
+                        placeholder="Enter your name"
+                        value={username}
+                        mode='outlined'
+                        label="User Name"
+                        autoCapitalize="none"
+                        right={<TextInput.Icon name="account"/>}
+                        activeOutlineColor="#2AD699"
+                        onChangeText={(username) => setUsername(username)}
+                    />
+                </View>
+                {isLogin ? (
+                    <View />
+                    ) : (
+                        <View
+                            style={{
+                                width: 300,
+                                height: 50,
+                                marginTop: 30
+                            }}
+                        >
+                            <TextInput
+                                placeholder="Enter email here"
+                                value={email}
+                                mode='outlined'
+                                autoCapitalize="none"
+                                label="Email"
+                                right={<TextInput.Icon name="email"/>}
+                                activeOutlineColor="#2AD699"
+                                onChangeText={(email) => setEmail(email)}
+                            />
+                        </View>
+                )}    
+                <View
+                    style={{
+                            width: 300,
+                            height: 50,
+                            marginTop: 30
+                        }}
+                >
+                    <TextInput
+                        placeholder="Enter password"
+                        value={password}
+                        mode='outlined'
+                        secureTextEntry
+                        label="Password"
+                        right={<TextInput.Icon name="eye" />}
+                        activeOutlineColor="#2AD699"
+                        onChangeText={(password) => setPassword(password)}
+                    />
+                    </View>
+                    {isLogin ? (
+                        <View />
+                        ) : (
+                            <View
+                                style={{
+                                    width: 300,
+                                    height: 50,
+                                    marginTop: 30
+                                }}
+                            >
+                                <TextInput
+                                    placeholder="Confirm password"
+                                    value={password}
+                                    mode='outlined'
+                                    secureTextEntry
+                                    label="Email"
+                                    right={<TextInput.Icon name="eye" />}
+                                    activeOutlineColor="#2AD699"
+                                    onChangeText={(paasword) => setConfirmPassword(paasword)}
+                                />
+                            </View>
+                    )}
+                    <View />
+                    <View
+                        style={{
+                            marginTop: 40
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: theme.COLORS.lightGreen1,
+                                borderRadius: 12,
+                                height: 45
+                            }}
+                            onPress={isLogin ? login : signUp}
+                        >
+                            <Text 
+                                style={{
+                                    fontSize: 20,
+                                    paddingVertical: 10,
+                                    color: theme.COLORS.white2,
+                                    alignSelf: 'center',
+                                }
+                                }>
+                                    {" "} {isLogin ? "Log In" : "Sign Up"} {" "}
+                            </Text>
+                            </TouchableOpacity>
+                            {loading ? (
+                                <ActivityIndicator color="#0000ff" style={{ marginLeft: 10 }} />                                
+                                ) : (
+                        <View />
+                            )}
+                    </View>
+                    <View>
+                        
+                    </View>
+                        
+            </View>    
+            
+        )
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>
-              {isLogin ? "Log In" : "Sign Up"}
-            </Text>
-            <View style={styles.inputView}>
-                <TextInput
-                  style={{ ...theme.SIZES.input }}
-                  placeholder="Username:"
-                  autoCapitalize='none'
-                  placeholderTextColor="#003f5c"
-                  onChangeText={(username) => setUsername(username)}
-                  value={username}
-                />
-            </View>
-          {isLogin ? <View/> :
-            <View style={styles.inputView}>
-                <TextInput
-                  style={{ ...theme.SIZES.input }}
-                  placeholder="Email:"
-                  placeholderTextColor="#003f5c"
-                  onChangeText={(pw) => setEmail(pw)}
-                  value={email}
-                />
-            </View>}
-      
-          <View style={styles.inputView}>
-              <TextInput
-                style={{ ...theme.SIZES.input }}
-                placeholder="Password:"
-                placeholderTextColor="#003f5c"
-                secureTextEntry={true}
-                onChangeText={(pw) => setPassword(pw)}
-                value={password}
-              />
-          </View>
-
-          {isLogin ? <View/> :
-          <View style={styles.inputView}>
-              <TextInput
-                  style={{ ...theme.SIZES.input }}
-                  placeholder="Confirm Password:"
-                  placeholderTextColor="#003f5c"
-                  secureTextEntry={true}
-                  onChangeText={(pw) => setConfirmPassword(pw)}
-                  value={confirmPassword}
-              />
-          </View>}
-
-          <View/>
-          <View>
-              <View style={{flexDirection: "row"}}>
-                  <TouchableOpacity style={styles.button} onPress={ isLogin ? login : signUp}>
-                      <Text style={styles.buttonText}> {isLogin ? "Log In" : "Sign Up"} </Text>
-                  </TouchableOpacity>
-                  {loading ? <ActivityIndicator color="#0000ff" style={{ marginLeft: 10 }}/> : <View/>}
-              </View>
-          </View>
-          <Text style={styles.errorText}>
-              {errorText}
-          </Text>
-              <TouchableOpacity
-                  onPress={() => {
-                      LayoutAnimation.configureNext({
-                          duration: 700,
-                          create: { type: 'linear', property: 'opacity' },
-                          update: { type: 'spring', springDamping: 0.4 }
-                      });
-                      setIsLogin(!isLogin);
-                      setErrorText("");
-                  }}>
-              <Text style={styles.switchText}> {isLogin ? "No account? Sign up now." : "Already have an account? Log in here."}</Text>
-              </TouchableOpacity>
-        </View>
-    );
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: theme.COLORS.lightGray,
+                // justifyContent: 'center'
+            }}
+        >
+            <StatusBar style='auto' />
+            <ImageBackground
+                source={ require("../assets/user-backgrd.jpg")}
+                style={{
+                    flex: 1,
+                    resizeMode: 'cover'
+                }}
+            >
+                <View style={{
+                    alignItems: 'center',
+                    marginTop: 150
+                }}>
+                    <Text
+                        style={{
+                            fontWeight: "bold",
+                            ...theme.FONTS.largeTitle
+                        }}
+                    >
+                        {isLogin ? "Log In" : "Sign Up"}
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    {renderInput()}
+                    
+                </View>
+                <View
+                    style={{
+                        top: 400,
+                        alignItems: 'center'
+                    }}
+                >
+                    <Text 
+                        style={{
+                            ...theme.FONTS.body4,
+                            color: theme.COLORS.red,
+                        }}
+                    >
+                        {errorText}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                        LayoutAnimation.configureNext({
+                            duration: 700,
+                            create: { type: "linear", property: "opacity" },
+                            update: { type: "spring", springDamping: 0.4 },
+                        });
+                        setIsLogin(!isLogin);
+                        setErrorText("");
+                        }}
+                    >
+                        <Text style={{
+                            ...theme.FONTS.body2,
+                            fontWeight: "400",
+                            marginTop: 20,
+                            color: theme.COLORS.white,
+                            backgroundColor: theme.COLORS.transparentGray,
+                        }}>
+                            {" "} {isLogin ? "No account? Sign up now." : "Already have an account? Log in here."}
+                        </Text>
+                    </TouchableOpacity>
+                </View>                       
+            </ImageBackground>
+        </SafeAreaView>
+    )
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 40, 
-    margin: 20
-  },
-  switchText: {
-    fontWeight: '400',
-    fontSize: 20, 
-    marginTop: 20
-  },
-  inputView: {
-    backgroundColor: "#FFC0CB",
-    borderRadius: 15,
-    width: "70%",
-    height: 45,
-    marginBottom: 20,
-    alignItems: "center",
-  },
-  button: {
-    backgroundColor: 'blue',
-    borderRadius: 15,
-    height: 45
-  },
-  buttonText: {
-    fontWeight: '400',
-    fontSize: 20, 
-    margin: 20,
-    color: 'white'
-  },
-  errorText: {
-    fontSize: 15,
-    color: 'red',
-    marginTop: 20
-  }
-});
+export default LoginSignup;

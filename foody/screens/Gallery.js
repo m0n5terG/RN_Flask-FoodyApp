@@ -3,6 +3,7 @@ import {
     Image,
     View,
     FlatList,
+    RefreshControl,
     SafeAreaView,
     StyleSheet,
     Text,
@@ -22,13 +23,15 @@ const Gallery = ({ navigation, route }) => {
     const token = useSelector((state) => state.auth.token);
     const username = useSelector((state) => state.accountPref.username)
     const profileImage = useSelector((state) => state.accountPref.profileImage);
-    const blogs = useSelector((state) => state.accountPref.blogs);
+    // const gal_blogs = useSelector((state) => state.accountPref.gal_blogs);
+    // const blogs = useSelector((state) => state.accountPref.blogs);
     const [posts, setPosts] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
+    const created_at = new Date()
 
     useEffect(() => {
         console.log("Setting up nav listener");
-        // Check for when we come back to this screen
+        
         const removeListener = navigation.addListener("focus", () => {
             console.log("Running nav listener");
             getPosts();
@@ -37,21 +40,23 @@ const Gallery = ({ navigation, route }) => {
         return removeListener;
     }, []);
 
-    async function onRefresh() {
-        setRefreshing(true);
-        const response = await getPosts()
-        console.log(response.data);
-        setRefreshing(false);
-    }
+    // async function onRefresh() {
+    //     setRefreshing(true);
+    //     const response = await getPosts();
+    //     setRefreshing(false);
+    // }
     
     async function getPosts() {
         
         try {
             const response = await axios.get(API + API_GET, {
                 headers: { Authorization: `JWT ${token}` },
-            })
+            });
+           
             // console.log(response.data);
             setPosts(response.data.allblogs);
+            
+            
             return "completed"
 
         } catch (error) {
@@ -123,7 +128,7 @@ const Gallery = ({ navigation, route }) => {
                 marginBottom: 20,
                 borderRadius: theme.SIZES.radius,
             }}
-            onPress={'null'}
+            // onPress={'null'}
             >
                 <Image
                     source={{ uri: API_IMAGE_URL + item.image }}
@@ -143,7 +148,7 @@ const Gallery = ({ navigation, route }) => {
                         paddingHorizontal: theme.SIZES.radius,
                         paddingVertical: 5,
                         backgroundColor: theme.COLORS.transparentGray,
-                        borderRadius: theme.SIZES.radius
+                        borderRadius: 5
                     }}
                  >
                     <Text
@@ -157,25 +162,51 @@ const Gallery = ({ navigation, route }) => {
                 </View>
                 <View
                     style={{
+                        height: 50,
+                        width: 50,
+                        backgroundColor: theme.COLORS.white2,
+                        borderRadius: 25,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        bottom: 90,
+                        left: 15
+                    }}
+                >
+                <Image
+                        source={{ uri: API_IMAGE_URL + item.profileImage }}
+                        style={{
+                            width: 45,
+                            height: 45,
+                            borderRadius: 25,
+                        }}
+                    />
+                </View>
+                <View
+                    style={{
                         position: 'absolute',
-                        bottom: 5,
-                        left: 20,
+                        width: '100%',
+                        bottom: 0,
+                        left: 15,
                         paddingHorizontal: theme.SIZES.radius,
                         paddingVertical: 5,
                         backgroundColor: theme.COLORS.transparentGray,
                         borderRadius: theme.SIZES.radius,
                     }}
                 >
+                    
                     <Text
                         style={{
                             color: theme.COLORS.white,
                             ...theme.FONTS.h4
                         }}
                     >
-                        Shared on: {item.created_at}
-                        
+                       {/* Shared on: {new Date(item.created_at * 1000).toString() + ' ' + new Date(item.created_at * 1000).toLocaleTimeString('en-US')} */}
+                        Shared by: {item.author}
                     </Text>
+                    
                 </View>
+                
+                
             </TouchableOpacity>
         )
     }
