@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, ValidationError, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, SQLAlchemySchema, auto_field
-from marshmallow_sqlalchemy.fields import Nested
 from flask_jwt import JWT, jwt_required, current_identity
 import os
 import base64
@@ -114,30 +113,20 @@ class LikeSchema(ma.Schema):
 class IngredientSchema(ma.Schema):
     id = fields.Int()
     item = fields.Str()
-
-
-class UserSchema1(SQLAlchemyAutoSchema):
-    # blogs = fields.List(fields.Nested(BlogSchema(only=('title','image'))))
     
-    class Meta:
-        fields = ('id', 'username', 'profileImage', 'date_joined')
-        # model = User
-        # include_relationships = True
-        # load_instance = True
-            
     
 class BlogSchema(SQLAlchemyAutoSchema):
     category = fields.Nested(CategorySchema(only=("name", "id")))
     ingredients = fields.List(IngredientName(only=("item",), many=True))
     comments = fields.List(fields.Nested(CommentSchema(only=("content", "author"))))
     likes = fields.List(fields.Nested(LikeSchema(only=("author",))))
-    authors = fields.List(fields.Nested(UserSchema1, many=True, only=("profileImage",)))
     
     class Meta:
         ordered: True
         
-        fields = ('id', 'title', 'instruction', 'image', 'authors', 'category', 'likes',
-                  'ingredients', 'serving', 'duration', 'created_at', 'updated_at', 'comments', 'authors')
+        fields = ('id', 'title', 'instruction', 'image', 'author', 'category', 'likes',
+                  'ingredients', 'serving', 'duration', 'created_at', 'updated_at', 'comments'
+                  'author_name', 'author_profileImage')
         
 
 class UserSchema(SQLAlchemyAutoSchema):
@@ -150,22 +139,22 @@ class UserSchema(SQLAlchemyAutoSchema):
         load_instance = True
     
 
-class BlogSchema2(SQLAlchemyAutoSchema):  
+# class BlogSchema2(SQLAlchemyAutoSchema):  
        
-    class Meta:
-        # fields = ('id', 'title', 'image', 'created_at', 'authors')
-        model = Blog
-        include_fk = True
-        load_instance = True
+#     class Meta:
+#         # fields = ('id', 'title', 'image', 'created_at', 'authors')
+#         model = Blog
+#         # include_fk = True
+#         load_instance = True
         
-    authors = Nested(UserSchema(only=('username', 'profileImage')))
+#     authors = Nested(UserSchema(only=('username', 'profileImage')))
     
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)            
 blog_schema = BlogSchema()
 blogs_schema = BlogSchema(many=True) 
 comments_schema = CommentSchema(many=True)
-blogs_schema2 = BlogSchema2(many=True)    
+# blogs_schema2 = BlogSchema2(many=True)    
 
            
 db.create_all()
@@ -219,7 +208,7 @@ def add_user():
 
 @app.route("/edit_user/<int:id>", methods=['PUT', 'DELETE'])
 @jwt_required()
-def edit_user(id):
+def edit_user():
     # blog = Blog.query.filter_by(id=id).first_or_404()
     user = User.query.filter_by(id=current_identity.id).first_or_404()
     if not user:
@@ -309,14 +298,14 @@ def get_all_blogs():
     
     return jsonify({"allblogs": results})
     
-# Get all Blogs for gallery  
-@app.route('/gallery',methods=["GET"])
-def get_gallery():
-    allblogs = Blog.query.order_by(Blog.created_at.desc()).all()
+# # Get all Blogs for gallery  
+# @app.route('/gallery',methods=["GET"])
+# def get_gallery():
+#     allblogs = Blog.query.order_by(Blog.created_at.desc()).all()
        
-    results = blogs_schema2.dump(allblogs)
+#     results = blogs_schema2.dump(allblogs)
     
-    return jsonify({"gal_blogs": results})
+#     return jsonify({"gal_blogs": results})
 
 
 # Get Blog by id
@@ -374,7 +363,7 @@ def update_blog(id):
 @jwt_required()
 def delete_blog(id):
     blog = Blog.query.filter_by(id=id).first()
-    user = current_identity.username
+    user = current_identity.id
     if user != blog.author:
         return jsonify({ "Error": "user not authorised!" }),401
     
@@ -482,7 +471,7 @@ def search():
 @app.route('/whoami')
 @jwt_required()
 def auth():
-    myRecipe = Blog.query.filter_by(author=current_identity.id)
+    myRecipe = Blog.query.filter_by(author=current_identity.username)
     results = blogs_schema.dump(myRecipe)
     return jsonify({
         "user_id": current_identity.id,
