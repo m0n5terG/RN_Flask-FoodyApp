@@ -161,7 +161,7 @@ const Home = ({ navigation, route }) => {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
-                        console.log(item.id); 
+                        console.log(posts.author); 
                         return (
                             <TreadingCard
                                 containerStyle={{

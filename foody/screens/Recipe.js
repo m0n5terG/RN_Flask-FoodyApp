@@ -49,69 +49,72 @@ const Recipe = ({ route }) => {
         setComments(recipe.comments)
         setLikes(recipe.likes)
     }, [])
-    console.log(selectedRecipe.instruction);
+    console.log(selectedRecipe.ingredients);
 
-    return (
-        <ScrollView
-            style={{
-                flex: 1,
-                backgroundColor: theme.COLORS.white,
-                marginTop: -500,
-                paddingTop: 500,
-                overflow: 'hidden'
-            }}
-        >
-               <Card
-                // style={{
+    function renderRecipeCardHeader() {
+        return (
+            <ScrollView
+                style={{
+                    flex: 1,
+                    backgroundColor: theme.COLORS.white,
+                    marginTop: -500,
+                    paddingTop: 500,
+                    overflow: 'hidden'
+                }}
+            >
+                <Card
+                    // style={{
+                        
+                    // }}
+                >
+                        <Image
+                        style={{ 
+                            width: '100%', 
+                            height: 350 
+                            }}
+                        source={{ uri: API_IMAGE_URL + selectedRecipe.image }}
+                    />
+                    <Card.Content
+                            style={{
+                                marginTop: 30,
+                                marginBottom: -40
+                            }}
+                    >
+                        <Title>{selectedRecipe.title}</Title>
+    
+                        <List.Item
+                            title={`by: ${selectedRecipe.author}`}
+                            //    description={selectedRecipe.instruction}
+                            left={props => {
+                                return (
+                                    <Avatar.Image
+                                        size={55}
+                                        source={{
+                                            uri: API_IMAGE_URL + profileImage
+                                        }}
+                                    />
+                                );
+                            }}
+                        />
+                        {/* <List.Item
+                            title={selectedRecipe.serving}
+                        />
+                        <List.Item
+                            title={selectedRecipe.duration}
+                            /> */}
+                        <List.Item
+                            title={`Posted ${moment(
+                                selectedRecipe.created_at,
+                                'YYYYMMDD',).fromNow()}`}
+                        />
+                        <Paragraph />
+                    </Card.Content>
                     
-                // }}
-               >
-                    <Image
-                       style={{ 
-                           width: '100%', 
-                           height: 350 }}
-                       source={{ uri: API_IMAGE_URL + selectedRecipe.image }}
-                   />
-                   <Card.Content
-                    style={{
-                        marginTop: 30,
-                        marginBottom: -40
-                    }}
-                   >
-                       <Title>{selectedRecipe.title}</Title>
- 
-                       <List.Item
-                           title={`by: ${selectedRecipe.author}`}
-                        //    description={selectedRecipe.instruction}
-                           left={props => {
-                               return (
-                                   <Avatar.Image
-                                       size={55}
-                                       source={{
-                                           uri: API_IMAGE_URL + profileImage
-                                       }}
-                                   />
-                               );
-                           }}
-                       />
-                       {/* <List.Item
-                        title={selectedRecipe.serving}
-                       />
-                       <List.Item
-                        title={selectedRecipe.duration}
-                        /> */}
-                       <List.Item
-                           title={`Posted ${moment(
-                               selectedRecipe.created_at,
-                               'YYYYMMDD',).fromNow()}`}
-                       />
-                       <Paragraph />
-                   </Card.Content>
-                   
-               </Card>
+                </Card>
 
-           </ScrollView>
-    )
+            </ScrollView>
+        )
+    }
     // function renderRecipeCardHeader() {
     //     return (
     //         <View
@@ -159,40 +162,40 @@ const Recipe = ({ route }) => {
     //     )
     // }
 
-    // return (
-    //     <View
-    //         style={{
-    //             flex: 1,
-    //             backgroundColor: theme.COLORS.white,
-    //         }}
-    //     >
-    //         <FlatList
-    //             data={selectedRecipe?.id} 
-    //             keyExtractor={item => item.id}
-    //             showsVerticalScrollIndicator={false}
-    //             ListHeaderComponent={
-    //                 <View>
+    return (
+        <View
+            style={{
+                flex: 1,
+                backgroundColor: theme.COLORS.white,
+            }}
+        >
+            <FlatList
+                data={selectedRecipe.ingredients} 
+                keyExtractor={item => item.id}
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={
+                    <View>
                         {/* Header */}
-                        // {renderRecipeCardHeader()}
+                         {renderRecipeCardHeader()}
 
                         {/* info */}
 
                         {/* Ingredients item */}
-                //     </View>
-                // }
+                     </View>
+                }
                 // scrollEventThrottle={16}
                 // onscroll={Animated.event([
                 //     { nativeEvent: {contentOffset: { y: scrollY }}}
                 // ], { useNativeDriver: true })}
-                // renderItem={({ item }) => (
-                //     <View>
-                        {/* <Text>{item.author}</Text> */}
-//                     </View>
-//                 )}
-//             />
+                renderItem={({ item }) => (
+                    <View>
+                        <Text>{item.item}</Text>
+                     </View>
+                )}
+            />
             
-//         </View>
-//     )
+        </View>
+    )
 }
 
 export default Recipe;
