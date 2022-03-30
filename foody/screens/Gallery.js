@@ -9,9 +9,17 @@ import {
     Text,
     TouchableOpacity,
 } from 'react-native';
+import {
+    Avatar,
+    // Card,
+    // Title,
+    // Paragraph,
+    // List
+ } from 'react-native-paper';
 import axios from 'axios';
 import { API, API_GET, API_IMAGE_URL } from "../constants/API";
 import { useSelector } from "react-redux";
+import moment from 'moment';
 import { BlurView } from 'expo-blur';
 
 import * as theme from '../style/theme';
@@ -23,28 +31,21 @@ const Gallery = ({ navigation, route }) => {
     const token = useSelector((state) => state.auth.token);
     const username = useSelector((state) => state.accountPref.username)
     const profileImage = useSelector((state) => state.accountPref.profileImage);
-    // const gal_blogs = useSelector((state) => state.accountPref.gal_blogs);
-    // const blogs = useSelector((state) => state.accountPref.blogs);
+    
     const [posts, setPosts] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-    const created_at = new Date()
+    
 
     useEffect(() => {
-        console.log("Setting up nav listener");
+        // console.log("Setting up nav listener");
         
         const removeListener = navigation.addListener("focus", () => {
-            console.log("Running nav listener");
+            // console.log("Running nav listener");
             getPosts();
         });
-        getPosts();
+            getPosts();
         return removeListener;
     }, []);
-
-    // async function onRefresh() {
-    //     setRefreshing(true);
-    //     const response = await getPosts();
-    //     setRefreshing(false);
-    // }
     
     async function getPosts() {
         
@@ -135,7 +136,7 @@ const Gallery = ({ navigation, route }) => {
                     resizeMode="cover"
                     style={{
                         height: 350,
-                        width: 400,
+                        width:'100%',
                         marginHorizontal: 15,
                         borderRadius: theme.SIZES.radius 
                 }}
@@ -143,17 +144,17 @@ const Gallery = ({ navigation, route }) => {
                 <View
                     style={{
                         position: 'absolute',
-                        top: 20,
-                        left: 30,
+                        top: 5,
+                        left: 20,
                         paddingHorizontal: theme.SIZES.radius,
                         paddingVertical: 5,
-                        backgroundColor: theme.COLORS.transparentGray,
-                        borderRadius: 5
+                        backgroundColor: theme.COLORS.transparentGray2,
+                        borderRadius: theme.SIZES.radius
                     }}
                  >
                     <Text
                         style={{
-                            color: theme.COLORS.white,
+                            color: theme.COLORS.white2,
                             ...theme.FONTS.h4
                         }}
                     >
@@ -168,17 +169,13 @@ const Gallery = ({ navigation, route }) => {
                         borderRadius: 25,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        bottom: 90,
-                        left: 15
+                        bottom: 55,
+                        left: 20
                     }}
                 >
-                <Image
-                        source={{ uri: API_IMAGE_URL + item.profileImage }}
-                        style={{
-                            width: 45,
-                            height: 45,
-                            borderRadius: 25,
-                        }}
+                <Avatar.Image
+                    source={{ uri: API_IMAGE_URL + item.profileImage }}
+                    size={45}
                     />
                 </View>
                 <View
@@ -186,11 +183,9 @@ const Gallery = ({ navigation, route }) => {
                         position: 'absolute',
                         width: '100%',
                         bottom: 0,
-                        left: 15,
+                        left: 250,
                         paddingHorizontal: theme.SIZES.radius,
                         paddingVertical: 5,
-                        backgroundColor: theme.COLORS.transparentGray,
-                        borderRadius: theme.SIZES.radius,
                     }}
                 >
                     
@@ -200,8 +195,12 @@ const Gallery = ({ navigation, route }) => {
                             ...theme.FONTS.h4
                         }}
                     >
+                        {`Shared: ${moment(
+                               item.created_at,
+                               'YYYYMMDD',
+                           ).fromNow()}`}
                        {/* Shared on: {new Date(item.created_at * 1000).toString() + ' ' + new Date(item.created_at * 1000).toLocaleTimeString('en-US')} */}
-                        Shared by: {item.author}
+                        {/* Shared by: {item.author} */}
                     </Text>
                     
                 </View>
