@@ -105,6 +105,10 @@ function LoginSignup({ navigation }) {
         }
 
     function renderInput () {
+
+        const [eye, setEye] = useState(true);
+        const [eye1, setEye1] = useState(true);
+
         return (     
             <View 
                 style={{
@@ -162,9 +166,16 @@ function LoginSignup({ navigation }) {
                         placeholder="Enter password"
                         value={password}
                         mode='outlined'
-                        secureTextEntry
+                        secureTextEntry={eye}
                         label="Password"
-                        right={<TextInput.Icon name="eye" />}
+                        right={
+                            <TextInput.Icon 
+                                name="eye"
+                                onPress={() => {
+                                    setEye(!eye);
+                                    return false;
+                                }} 
+                            />}
                         activeOutlineColor="#2AD699"
                         onChangeText={(password) => setPassword(password)}
                     />
@@ -181,11 +192,18 @@ function LoginSignup({ navigation }) {
                             >
                                 <TextInput
                                     placeholder="Confirm password"
-                                    value={password}
+                                    value={confirmPassword}
                                     mode='outlined'
-                                    secureTextEntry
-                                    label="Email"
-                                    right={<TextInput.Icon name="eye" />}
+                                    secureTextEntry={eye1}
+                                    label="Confirm Password"
+                                    right={
+                                        <TextInput.Icon 
+                                            name="eye"
+                                            onPress={() => {
+                                                setEye1(!eye1);
+                                                return false;
+                                            }} 
+                                        />}
                                     activeOutlineColor="#2AD699"
                                     onChangeText={(paasword) => setConfirmPassword(paasword)}
                                 />
@@ -236,7 +254,8 @@ function LoginSignup({ navigation }) {
             style={{
                 flex: 1,
                 backgroundColor: theme.COLORS.lightGray,
-                // justifyContent: 'center'
+                marginTop: -50,
+                marginBottom: -30
             }}
         >
             <StatusBar style='auto' />
@@ -249,7 +268,7 @@ function LoginSignup({ navigation }) {
             >
                 <View style={{
                     alignItems: 'center',
-                    marginTop: 150
+                    marginTop: 200
                 }}>
                     <Text
                         style={{

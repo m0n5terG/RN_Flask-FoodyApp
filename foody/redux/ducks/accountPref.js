@@ -6,6 +6,9 @@ const UPLOAD_DATE_JOINED = "upload_date_joined";
 const UPLOAD_COUNT = "upload_count";
 const UPLOAD_BLOGS = "upload_blogs";
 // const UPLOAD_GALBLOGS = "upload_galblogs";
+// const UPLOAD_BLOG_ID = "upload_blog_id";
+// const UPLOAD_BLOG_TITLE = "upload_blog_title";
+// const UPLOAD_BLOG_INSTRUCTION = "upload_blog_instruction";
 
 
 

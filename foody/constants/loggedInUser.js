@@ -1,3 +1,4 @@
+import { useEffect} from 'react';
 import axios from 'axios';
 import { API, API_WHOAMI, API_IMAGE_URL } from './API';
 
@@ -11,7 +12,18 @@ import {
     uploadCountAction
 } from '../redux/ducks/accountPref';
 
-async function loggedInUser(dispatch, token) {
+// useEffect(() => {
+//     console.log("Setting up nav listener");
+//     // Check for when we come back to this screen
+//     const removeListener = navigation.addListener("focus", () => {
+//         console.log("Running nav listener");
+//         login();
+//     });
+//     login();
+//     return removeListener;
+// }, []);
+
+async function login(dispatch, token) {
     try {
         const response = await axios.get(API + API_WHOAMI, {
             headers: { Authorization: `JWT ${token}`},
@@ -23,7 +35,7 @@ async function loggedInUser(dispatch, token) {
         dispatch({ ...uploadDateJoinedAction(), payload: response.data.date_joined })
         dispatch({ ...uploadBlogsAction(), payload: response.data.blogs})
         dispatch({ ...uploadCountAction(), payload: response.data.count})
-        console.log(response.data.count)
+        // console.log(response.data.count)
     }
     catch (error) {
         if (error.response)
@@ -33,4 +45,4 @@ async function loggedInUser(dispatch, token) {
     }
   }
 
-export default loggedInUser;
+export default login;

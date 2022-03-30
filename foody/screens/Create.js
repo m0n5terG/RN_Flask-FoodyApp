@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 
 import * as theme from '../style/theme';
 
-const Post = ({ navigation }) => {
+const Create = ({ navigation }) => {
 
     const [title, setTitle] = useState("");
     const [instruction, setInstruction] = useState("");
@@ -117,4 +117,4 @@ const Post = ({ navigation }) => {
     )
 }
 
-export default Post;
+export default Create;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { 
     ActivityIndicator,
     FlatList,
@@ -12,20 +12,20 @@ import {
     ScrollView,
     StyleSheet, 
     Animated, 
-    TouchableWithoutFeedback } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-// import { commonStyles, lightStyles, darkStyles } from "../styles/commonStyles";
-import axios from "axios";
-import { API, API_SIGNUP, API_WHOAMI } from "../constants/API";
-import { logOutAction } from "../redux/ducks/blogAuth";
-import { changeModeAction, deletePicAction } from '../redux/ducks/accountPref';
-import { useDispatch, useSelector } from "react-redux";
+    TouchableWithoutFeedback 
+} from "react-native";
+import moment from 'moment';
+import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { logOutAction } from "../redux/ducks/blogAuth";
+import { useDispatch, useSelector } from "react-redux";
+
 import TreadingCard from '../components/TreadingCard';
 
 import * as theme from '../style/theme';
 
-function Profile ({ navigation }) {
+function Profile ({ navigation, route }) {
     
     const username = useSelector((state) => state.accountPref.username);
     const profileImage = useSelector((state) => state.accountPref.profileImage);
@@ -76,13 +76,13 @@ function Profile ({ navigation }) {
         return (
             <View
                 style={{
-                    marginTop: theme.SIZES.padding,
+                    marginTop: 10
                 }}
             >
                 <Text
                     style={{
                         marginHorizontal: theme.SIZES.padding,
-                        ...theme.FONTS.h2
+                        ...theme.FONTS.h3
                     }}
                 >
                     My Posting
@@ -117,21 +117,58 @@ function Profile ({ navigation }) {
           }}
       >
             <ScrollView>
-                <View style={{ alignSelf: "center", marginTop: 20 }}>
-                    <View style={styles.profileImage}>
-                        <Image source={{ uri: profileImage }} style={styles.image} resizeMode="center"></Image>
+                <View style={{ alignSelf: "center", marginTop: 10 }}>
+                    <View style={{
+                        width: 200,
+                        height: 200,
+                        borderRadius: 100,
+                        overflow: "hidden"
+                    }}>
+                        <Image 
+                            source={{ uri: profileImage }} 
+                            resizeMode="center"
+                            style={{
+                                flex: 1,
+                                height: undefined,
+                                width: undefined
+                            }} 
+                        />
                     </View>
-                    <View style={styles.add}>
-                        <Ionicons name="ios-add" size={36} color="#DFD8C8" style={{ marginTop: 2, marginLeft: 2 }}></Ionicons>
+                    <View
+                        style={styles.add}
+                    >
+                        <TouchableWithoutFeedback       
+                            onPress={() => navigation.navigate("CameraP")}
+                        >
+                            <Ionicons 
+                                name="ios-add" 
+                                size={36} 
+                                color="#DFD8C8" 
+                                style={{ 
+                                    marginTop: 2, 
+                                    marginLeft: 2,
+                                }}
+                            />
+                        </TouchableWithoutFeedback>
                     </View>
                 </View>
-                <View style={styles.infoContainer}>
+                <View 
+                    style={{
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        marginTop: 5
+                }}>
                     <Text style={{ color: theme.COLORS.blue, ...theme.FONTS.h1 }}>{username}</Text>
                     <Text style={{ color: theme.COLORS.gray3, ...theme.FONTS.subText }}>Date Joined</Text>
-                    <Text style={{ color: theme.COLORS.lightGray2, ...theme.FONTS.body4 }}>{date_joined}</Text>
+                    <Text style={{ color: theme.COLORS.lightGray2, ...theme.FONTS.body4 }}>{moment(date_joined).format('Do MMM YYYY')}</Text>
                 </View>
 
-                <View style={styles.statsContainer}>
+                <View 
+                    style={{
+                        flexDirection: 'row',
+                        alignSelf: 'center',
+                        marginTop: 10
+                    }}>
                     <View style={styles.statsBox}>
                         <Text style={{ color: theme.COLORS.gray, ...theme.FONTS.h2 }}>{count}</Text>
                         <Text style={{ color: theme.COLORS.gray3, ...theme.FONTS.subText }}>Posts</Text>
@@ -154,38 +191,16 @@ function Profile ({ navigation }) {
     );
 }
 const styles = StyleSheet.create({
-  
-    image: {
-        flex: 1,
-        height: undefined,
-        width: undefined
-    },
-    profileImage: {
-        width: 200,
-        height: 200,
-        borderRadius: 100,
-        overflow: "hidden"
-    },
     add: {
         backgroundColor: theme.COLORS.transparentBlack5,
         position: "absolute",
-        bottom: 0,
-        right: 20,
+        left: 140,
+        bottom: 5,
         width: 40,
         height: 40,
         borderRadius: 30,
         alignItems: "center",
         justifyContent: "center"
-    },
-    infoContainer: {
-        alignSelf: "center",
-        alignItems: "center",
-        marginTop: 16
-    },
-    statsContainer: {
-        flexDirection: "row",
-        alignSelf: "center",
-        marginTop: 32
     },
     statsBox: {
         alignItems: "center",

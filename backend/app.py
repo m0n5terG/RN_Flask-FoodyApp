@@ -1,3 +1,4 @@
+from unicodedata import category
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -116,7 +117,7 @@ class IngredientSchema(ma.Schema):
     
     
 class BlogSchema(SQLAlchemyAutoSchema):
-    category = fields.Nested(CategorySchema(only=("name", "id")))
+    category = fields.Nested(CategorySchema(only=("name",)))
     ingredients = fields.List(IngredientName(only=("item",), many=True))
     comments = fields.List(fields.Nested(CommentSchema(only=("content", "author"))))
     likes = fields.List(fields.Nested(LikeSchema(only=("author",))))
@@ -125,12 +126,10 @@ class BlogSchema(SQLAlchemyAutoSchema):
         ordered: True
         
         fields = ('id', 'title', 'instruction', 'image', 'author', 'category', 'likes',
-                  'ingredients', 'serving', 'duration', 'created_at', 'updated_at', 'comments'
-                  'author_name', 'author_profileImage')
+                  'ingredients', 'serving', 'duration', 'created_at', 'updated_at', 'comments')
         
 
 class UserSchema(SQLAlchemyAutoSchema):
-    # blogs = fields.List(fields.Nested(BlogSchema(only=('title','image'))))
     
     class Meta:
         # fields = ('id', 'username', 'email', 'profileImage', 'blogs', 'date_joined')
@@ -298,14 +297,7 @@ def get_all_blogs():
     
     return jsonify({"allblogs": results})
     
-# # Get all Blogs for gallery  
-# @app.route('/gallery',methods=["GET"])
-# def get_gallery():
-#     allblogs = Blog.query.order_by(Blog.created_at.desc()).all()
-       
-#     results = blogs_schema2.dump(allblogs)
-    
-#     return jsonify({"gal_blogs": results})
+# Get all Blogs Category
 
 
 # Get Blog by id
@@ -495,3 +487,4 @@ def my_post():
 # Run Server
 if __name__ == '__main__':
     app.run(debug=True)
+    # host = '192.168.50.46',port=19000, 

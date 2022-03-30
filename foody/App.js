@@ -6,8 +6,8 @@ import store from "./redux/configureStore";
 
 import Landing from "./screens/Landing";
 import LoginSignup from "./screens/LoginSignup";
-import tabs from "./navigation/tabs";
 import { ActivityIndicator, View } from "react-native";
+import MainStack from "./navigation/TabNavigator";
 
 const Stack = createStackNavigator();
 
@@ -45,7 +45,7 @@ function App() {
                 initialRouteName={"Landing"}
             >
                 <Stack.Screen name="Landing" component={Landing} />
-                <Stack.Screen name="Home" component={tabs} />
+                <Stack.Screen name="Home" component={MainStack} />
                 <Stack.Screen name="LoginSignup" component={LoginSignup} />
             </Stack.Navigator>
         </NavigationContainer>

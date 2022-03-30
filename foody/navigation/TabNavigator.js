@@ -1,10 +1,10 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import Home from '../screens/Home';
-import Settings from './settings';
-import Gallery from '../screens/Gallery'
-import Chef from "../screens/Chef";
+import { HomeStack } from "./StackNavigator";
+import { GalleryStack } from "./StackNavigator";
+import { SettingStack } from "./StackNavigator";
+import { ChefStack } from "./StackNavigator";
 
 import * as theme from '../style/theme';
 import TabIcon from "../components/TabIcon";
@@ -12,7 +12,7 @@ import TabIcon from "../components/TabIcon";
 
 const Tab = createBottomTabNavigator()
 
-const Tabs = () => {
+const MainStack = () => {
     return (
         <Tab.Navigator
             screenOptions={({route}) => ({
@@ -31,8 +31,8 @@ const Tabs = () => {
             })}
         >
             <Tab.Screen
-                name="Home"
-                component={Home}
+                name="Index"
+                component={HomeStack}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
                     {focused} icon={require('../assets/icons/home.png')} />
@@ -40,7 +40,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Gallery"
-                component={Gallery}
+                component={GalleryStack}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
                     {focused} icon={require('../assets/icons/recipe.png')} />
@@ -48,7 +48,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Chefs"
-                component={Chef}
+                component={ChefStack}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
                     {focused} icon={require('../assets/icons/chef.png')} />
@@ -56,7 +56,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Profile"
-                component={Settings}
+                component={SettingStack}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
                     {focused} icon={require('../assets/icons/profile.png')} />
@@ -66,4 +66,4 @@ const Tabs = () => {
     )
 }
 
-export default Tabs;
+export default MainStack;

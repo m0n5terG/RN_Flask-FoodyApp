@@ -25,7 +25,6 @@ const Home = ({ navigation, route }) => {
     const profileImage = useSelector((state) => state.accountPref.profileImage);
 
     const [posts, setPosts] = useState([]);
-    const [refreshing, setRefreshing] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -58,13 +57,6 @@ const Home = ({ navigation, route }) => {
             }
         }
     }
-
-    async function onRefresh() {
-        setRefreshing(true);
-        const response = await getPosts()
-        console.log(response.data);
-        setRefreshing(false);
-      }
 
     function renderHeader() {
         return (
@@ -100,7 +92,7 @@ const Home = ({ navigation, route }) => {
                     </Text>
                 </View>
                 <TouchableOpacity
-                    onPress={() => consolelog("Profile")}
+                    onPress={() => navigation.navigate("Profile")}
                 >
                     <Image
                         source={{ uri: profileImage }}
@@ -169,16 +161,17 @@ const Home = ({ navigation, route }) => {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
-                        
+                        console.log(item.id); 
                         return (
                             <TreadingCard
                                 containerStyle={{
                                     marginLeft: index == 0 ? theme.SIZES.padding : 0
                                 }}
                                 recipeItem={item}
-                                onPress={() => navigation.navigate("null", {item})}
+                                onPress={() => navigation.navigate("Recipe", {recipe: item})}
+                                 
                             />
-                        )
+                        )  
                     }}
                 />
             </View>
@@ -204,7 +197,9 @@ const Home = ({ navigation, route }) => {
                 >
                     Categories
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Recipe')}
+                >
                     <Text
                         style={{
                             color: theme.COLORS.gray,
@@ -230,12 +225,6 @@ const Home = ({ navigation, route }) => {
                 keyExtractor={item => item.id}
                 keyboardDismissMode="on-drag"
                 showsVerticalScrollIndicator={false}
-                refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={onRefresh}
-                    />
-                }
                 ListHeaderComponent={
                     <View>
                         {renderHeader()}

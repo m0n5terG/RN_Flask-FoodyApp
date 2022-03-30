@@ -1,23 +1,44 @@
 import React from 'react';
+import { StatusBar } from "expo-status-bar";
 import {
     View,
-    Text
+    Text,
+    ImageBackground,
+    SafeAreaView
 } from 'react-native';
+import axios from "axios";
+import { API, API_EDIT_PROFILE, API_IMAGE_URL } from "../constants/API";
+import { useDispatch, useSelector } from "react-redux";
 
 import * as theme from '../style/theme';
 
 
 const EditProfile = () => {
+
+    const username = useSelector((state) => state.accountPref.username);
+    const profileImage = useSelector((state) => state.accountPref.profileImage);
+
+    const dispatch = useDispatch();
+
     return (
-        <View
+        <SafeAreaView
             style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center'
+                flex: 0.9,
+                backgroundColor: theme.COLORS.lightGray,
+                
             }}
         >
-            <Text>Edit Profile</Text>
-        </View>
+            
+            <StatusBar style='auto' />
+            <ImageBackground
+                source={ require("../assets/user-backgrd.jpg")}
+                style={{
+                    flex: 1,
+                    resizeMode: 'cover'
+                }}
+            >                     
+            </ImageBackground>
+        </SafeAreaView>
     )
 }
 

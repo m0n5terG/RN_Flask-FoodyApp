@@ -59,24 +59,27 @@ import {
  }
 
  const RecipeCardInfo = ({ recipeItem }) => {
-    if (Platform.OS === 'ios') {    
-        return (
-            <BlurView
-                intensity={50}
-                tint="dark"
-                style={styles.blurContainer}
-            >
-                <RecipeCardDetails 
-                    recipeItem={recipeItem}
-                />
-            </BlurView>
-        )
-    } else {
+    // if (Platform.OS === 'ios') {    
+    //     return (
+    //         <View style={{ borderRadius: 25}}>
+    //             <BlurView
+    //             intensity={50}
+    //             tint="dark"
+    //             style={styles.blurContainer}
+    //         >
+    //             <RecipeCardDetails 
+    //                 recipeItem={recipeItem}
+    //             />
+    //         </BlurView>
+    //         </View>      
+    //     )
+    // } else {
         return (
             <View
                 style={{
                     ...styles.blurContainer,
-                    backgroundColor: theme.COLORS.transparentDarkGray
+                    width: '100%',
+                    backgroundColor: theme.COLORS.transparentGray2
                 }}
             >
                 <RecipeCardDetails 
@@ -85,7 +88,7 @@ import {
             </View>
         )
     }
- }
+//  }
 
  const TreadingCard = ({containerStyle, recipeItem, onPress}) => {
     return (
@@ -112,8 +115,8 @@ import {
             <View
                 style={{
                     position: 'absolute',
-                    top: 20,
-                    left: 15,
+                    top: 10,
+                    left: 5,
                     paddingHorizontal: theme.SIZES.radius,
                     paddingVertical: 5,
                     backgroundColor: theme.COLORS.transparentGray,
@@ -140,13 +143,14 @@ import {
  const styles = StyleSheet.create({
     blurContainer: {
         position: 'absolute',
-        bottom: 10,
-        left: 10,
+        bottom: 0,
+        left: 0,
         right: 10,
         height: 100,
         paddingVertical: theme.SIZES.radius,
         paddingHorizontal: theme.SIZES.base,
-        borderRadius: theme.SIZES.radius
+        borderBottomStartRadius: theme.SIZES.radius,
+        borderBottomEndRadius: theme.SIZES.radius,
     }
  })
 

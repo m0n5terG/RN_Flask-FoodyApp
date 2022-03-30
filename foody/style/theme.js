@@ -27,6 +27,8 @@ export const COLORS = {
     transparentBlack7: 'rgba(2, 2, 2, 0.7)',
     transparentBlack9: 'rgba(2, 2, 2, 0.9)',
 
+    transparentGray2: 'rgba(176, 176, 176, 0.35)',
+    transparentGray1: 'rgba(196, 196, 196, 0.33)',
     transparentGray: 'rgba(77,77,77, 0.8)',
     transparentDarkGray: 'rgba(20,20,20, 0.9)',
 
