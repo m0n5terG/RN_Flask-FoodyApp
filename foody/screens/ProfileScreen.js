@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TreadingCard from '../components/TreadingCard';
 
 import * as theme from '../style/theme';
+// import { useFocusEffect } from "@react-navigation/native";
 
 const wait = (timeout) => {
     return new Promise(resolve =>
@@ -53,6 +54,7 @@ function ProfileScreen ({ navigation, route }) {
         wait(2000).then(() =>
         setRefreshing(false));
     }, []);
+
 
     useEffect(() => {
         navigation.setOptions({
@@ -162,7 +164,7 @@ function ProfileScreen ({ navigation, route }) {
                         style={styles.add}
                     >
                         <TouchableWithoutFeedback       
-                            onPress={() => navigation.navigate("CameraP")}
+                            onPress={() => navigation.navigate("EditProfile")}
                         >
                             <Ionicons 
                                 name="ios-add" 

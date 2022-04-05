@@ -23,12 +23,10 @@ const EditProfileScreen = () => {
     return (
         <SafeAreaView
             style={{
-                flex: 0.9,
+                flex: 1,
                 backgroundColor: theme.COLORS.lightGray,
-                
             }}
         >
-            
             <StatusBar style='auto' />
             <ImageBackground
                 source={ require("../assets/user-backgrd.jpg")}
@@ -36,7 +34,17 @@ const EditProfileScreen = () => {
                     flex: 1,
                     resizeMode: 'cover'
                 }}
-            >                     
+            >
+                <View
+                    style={{
+                        flex:1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        
+                    }}
+                >
+                    <Text>Working in progress</Text>
+                </View>                     
             </ImageBackground>
         </SafeAreaView>
     )

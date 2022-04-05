@@ -226,23 +226,6 @@ const RecipeScreen = ({ navigation, route }) => {
                         }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity 
-                onPress={deletePost}
-                    style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 30,
-                        width: 30
-                    }}
-                >
-                <Image
-                    source={require("../assets/icons/delete.png")}
-                    style={{
-                        width: 30,
-                        height: 30,
-                    }}
-                />
-            </TouchableOpacity>
             </View>
         )
     }
@@ -332,7 +315,6 @@ const RecipeScreen = ({ navigation, route }) => {
                             height: 30,
                             tintColor: theme.COLORS.gray
                         }}/>
-                    
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={deletePost}
@@ -396,7 +378,7 @@ const RecipeScreen = ({ navigation, route }) => {
                             height: 40,
                             tintColor: theme.COLORS.lightGreen1
                         }}/>
-                    <Text 
+                    {/* <Text 
                         style={{
                             alignSelf: 'center', 
                             marginTop: 10, 
@@ -404,7 +386,7 @@ const RecipeScreen = ({ navigation, route }) => {
                             ...theme.FONTS.h2}}
                     >
                         {selectedRecipe?.likes.length}
-                    </Text> 
+                    </Text>  */}
                 </View> 
             </View>
         )
@@ -428,14 +410,14 @@ const RecipeScreen = ({ navigation, route }) => {
                 >
                     Comments
                 </Text>
-                <Text
+                {/* <Text
                     style={{
                         color: theme.COLORS.lightGray2,
                         ...theme.FONTS.body4
                     }}
                 >
                     {selectedRecipe?.comments.length} comments
-                </Text>
+                </Text> */}
             </View>
         )
     }
