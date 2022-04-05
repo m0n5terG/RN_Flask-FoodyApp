@@ -22,6 +22,7 @@ import { logOutAction } from "../redux/ducks/blogAuth";
 import { useDispatch, useSelector } from "react-redux";
 
 import TreadingCard from '../components/TreadingCard';
+import login from "../constants/loggedInUser";
 
 import * as theme from '../style/theme';
 // import { useFocusEffect } from "@react-navigation/native";
@@ -49,11 +50,22 @@ function ProfileScreen ({ navigation, route }) {
     //     outputRange: [200, 300, 200]
     // }
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        wait(2000).then(() =>
-        setRefreshing(false));
-    }, []);
+    // useEffect(() => {
+    //     console.log("Setting up nav listener");
+    //     const removeListener = navigation.addListener("focus", () => {
+    //         console.log("Running nav listener");
+    //         useDispatch();
+    //     });
+    //     useDispatch();
+    //     return removeListener;
+    // }, []);
+
+    async function onRefresh() {
+    setRefreshing(true);
+    const response = await getPosts()
+    console.log(response.data);
+    setRefreshing(false);
+  }
 
 
     useEffect(() => {

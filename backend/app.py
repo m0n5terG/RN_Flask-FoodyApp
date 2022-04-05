@@ -304,41 +304,45 @@ def get_single_blog(id):
 @app.route('/update_blog/<int:id>', methods=["PUT"])
 @jwt_required()
 def update_blog(id):
-    
-    imageFileName = str(uuid.uuid4()) + '.jpg'
-    image = imageFileName
-    
+   
     blog = Blog.query.filter_by(id=id).first_or_404()
     
-    data = request.get_json()
-    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], blog.image))
+    if blog.author == current_identity.username:
+     
+        imageFileName = str(uuid.uuid4()) + '.jpg'
+        image = imageFileName
+        
+        data = request.get_json()
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], blog.image))
+        
+        blog.title = data["title"]
+        blog.instruction = data["instruction"]
+        blog.ingredients = data["ingredients"]
+        blog.category = data["category"]
+        blog.image = image
+        blog.serving = data["serving"]
+        blog.duration = data["duration"]
+        
+        # for ingredient in data["ingredients"]:
+        #     present_ing = Ingredient.query.filter_by(item=ingredient).first()
+        #     if(present_ing):
+        #         present_ing.blogs_associated.append(new_blog)
+        #     else:
+        #         new_ingredient = Ingredient(item=ingredient)
+        #         new_ingredient.blogs_associated.append(new_blog)
+        #         db.session.add(new_ingredient)
     
-    blog.title = data["title"]
-    blog.instruction = data["instruction"]
-    blog.ingredients = data["ingredients"]
-    blog.category = data["category"]
-    blog.image = image
-    blog.serving = data["serving"]
-    blog.duration = data["duration"]
-    
-    # for ingredient in data["ingredients"]:
-    #     present_ing = Ingredient.query.filter_by(item=ingredient).first()
-    #     if(present_ing):
-    #         present_ing.blogs_associated.append(new_blog)
-    #     else:
-    #         new_ingredient = Ingredient(item=ingredient)
-    #         new_ingredient.blogs_associated.append(new_blog)
-    #         db.session.add(new_ingredient)
-   
-    db.session.commit()
-    
-    image = bytes(request.json['image'], encoding="ascii")
-    im = Image.open(BytesIO(base64.b64decode(image)))
-    im.save(os.path.join(app.config['UPLOAD_FOLDER'], imageFileName))
-    
-    return jsonify(blog_schema.dump(blog)),200
-# if 'ingredients' in data:  
-#         blog.ingredients = data['ingredients']
+        db.session.commit()
+        
+        image = bytes(request.json['image'], encoding="ascii")
+        im = Image.open(BytesIO(base64.b64decode(image)))
+        im.save(os.path.join(app.config['UPLOAD_FOLDER'], imageFileName))
+        
+        return jsonify(blog_schema.dump(blog)),200
+    else:
+        return jsonify({ "Error": "User not authorised!" }),401
+    # if 'ingredients' in data:  
+    #         blog.ingredients = data['ingredients']
 
 # Delete selected Blog
 @app.route('/delete_blog/<int:id>', methods=["DELETE"])
@@ -347,7 +351,7 @@ def delete_blog(id):
     blog = Blog.query.filter_by(id=id).first()
     # author = current_identity.username
     # if author == blog.author:
-    # os.remove(os.path.join(app.config['UPLOAD_FOLDER'], blog.image))
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], blog.image))
     db.session.delete(blog)
     db.session.commit()
     

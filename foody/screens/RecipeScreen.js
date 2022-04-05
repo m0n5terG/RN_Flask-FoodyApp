@@ -17,7 +17,7 @@ import {
 import moment from 'moment';
 
 import * as theme from '../style/theme';
-import { API, API_DELETE ,API_GET_FB, API_IMAGE_URL } from '../constants/API';
+import { API, API_DELETE ,API_GET_FB, API_GET_SP, API_IMAGE_URL } from '../constants/API';
 import axios from 'axios';
 import { logOutAction } from '../redux/ducks/blogAuth';
 import { useDispatch, useSelector } from "react-redux";
@@ -102,18 +102,52 @@ const RecipeScreen = ({ navigation, route }) => {
                 setSelectedRecipe(recipe) 
             }, [])
 
+            useEffect(() => {
+                console.log("Setting up nav listener");
+                const removeListener = navigation.addListener("focus", () => {
+                    console.log("Running nav listener");
+                    getSinglePosts();
+                });
+                getSinglePosts();
+                return removeListener;
+            }, []);
+
     async function deletePost() {
-                
+        const id = selectedRecipe?.id
+            console.log(id)      
         try {
             const response = await axios.delete(API + API_DELETE + id, { 
                 headers: { Authorization: `JWT ${token}` }, });
             console.log(response)
-            selectedRecipe(items.filter((item) => item.id !== id));
+            // setSelectedRecipe(post.filter((item) => item.id !== id));
                     
             } catch (error) {
             console.log(error)
             }
-        }       
+        }
+
+        async function getSinglePosts() {
+
+            const id = selectedRecipe?.id
+            console.log(id)
+            try {
+                const response = await axios.get(API + API_GET_SP + id, {
+                    headers: { Authorization: `JWT ${token}` },
+                })
+                console.log(response.data);
+                setSelectedRecipe(response.data.single_blogs);
+                return "completed"
+    
+            } catch (error) {
+                console.log(error)
+                console.log(error.response.data);
+                if (error.response.data.error = "Invalid token") {
+                    navigation.navigate("SignInSignUp");
+                }
+            }
+        }
+        
+    
 
     function renderHeaderBar() {
         return (
@@ -418,6 +452,21 @@ const RecipeScreen = ({ navigation, route }) => {
                 >
                     {selectedRecipe?.comments.length} comments
                 </Text> */}
+                <TouchableOpacity
+                    onPress={() => setModalVisible(!modalVisible)}
+                    style={{
+                        position: 'absolute',
+                        right: 10,
+                        top: 0
+                    }}>
+                    <Image
+                        source={require('../assets/icons/addpost.png')}
+                        style={{
+                            width: 30,
+                            height: 30,
+                            tintColor: theme.COLORS.gray
+                        }}/>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -580,7 +629,7 @@ const RecipeScreen = ({ navigation, route }) => {
                         </View>
                     </View>
                 </Modal>
-                <FAB
+                {/* <FAB
                     style={{
                         position: 'absolute',
                         margin: 16,
@@ -590,7 +639,7 @@ const RecipeScreen = ({ navigation, route }) => {
                     small
                     icon="plus"
                     onPress={() => setModalVisible(!modalVisible)}
-                />
+                /> */}
             </View>   
         </View>
     )

@@ -78,7 +78,7 @@ const CreateScreen = ({ navigation }) => {
                 console.log("Post success!");
                 console.log(response.data);
      
-                navigation.push('Recipe', { recipe: recipe });
+                navigation.navigate('Recipe', { recipe: recipe });
             } 
             catch (error) {
             console.log(error.response);
