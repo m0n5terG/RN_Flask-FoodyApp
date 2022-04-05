@@ -12,17 +12,6 @@ import {
     uploadCountAction
 } from '../redux/ducks/accountPref';
 
-// useEffect(() => {
-//     console.log("Setting up nav listener");
-//     // Check for when we come back to this screen
-//     const removeListener = navigation.addListener("focus", () => {
-//         console.log("Running nav listener");
-//         login();
-//     });
-//     login();
-//     return removeListener;
-// }, []);
-
 async function login(dispatch, token) {
     try {
         const response = await axios.get(API + API_WHOAMI, {

@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as theme from '../style/theme';
 
 
-const EditProfile = () => {
+const EditProfileScreen = () => {
 
     const username = useSelector((state) => state.accountPref.username);
     const profileImage = useSelector((state) => state.accountPref.profileImage);
@@ -42,4 +42,4 @@ const EditProfile = () => {
     )
 }
 
-export default EditProfile;
+export default EditProfileScreen;

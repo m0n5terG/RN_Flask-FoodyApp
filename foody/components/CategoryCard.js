@@ -35,26 +35,27 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
             />
             <View
                 style={{
-                    width: '65%',
-                    paddingHorizontal: 20
+                    // width: '65%',
+                    paddingHorizontal: 20,
+                    alignItems: 'center',
+                    // justifyContent: 'center'
                 }}
             >
                 <Text
                     style={{
-                        flex: 1,
                         ...theme.FONTS.h2
                     }}
                 >
-                    {categoryItem.title}
+                    {categoryItem.category}
                 </Text>
-                <Text
+                {/* <Text
                     style={{
                         color: theme.COLORS.gray,
                         ...theme.FONTS.body4
                     }}
                 >
                     {categoryItem.duration} | {categoryItem.serving} Serving
-                </Text>
+                </Text> */}
             </View>
         </TouchableOpacity>
     )

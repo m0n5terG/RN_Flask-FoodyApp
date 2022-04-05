@@ -1,39 +1,44 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Home from '../screens/Home';
-import Search from '../screens/Search';
-import Edit from '../screens/Edit';
-import Recipe from '../screens/Recipe';
-import Create from '../screens/Create';
-import Gallery from '../screens/Gallery';
-import CamScreen from '../screens/Camera';
-import CameraP from '../screens/CameraP';
-import Profile from '../screens/Profile';
-import EditProfile from '../screens/EditProfile';
-import Chef from '../screens/Chef';
-import { COLORS } from '../style/theme';
+import Index from '../screens/Index';
+import SearchScreen from '../screens/SearchScreen';
+import EditScreen from '../screens/EditScreen';
+import RecipeScreen from '../screens/RecipeScreen';
+import CreateScreen from '../screens/CreateScreen';
+import GalleryScreen from '../screens/GalleryScreen';
+// import CamScreen from '../screens/Camera';
+// import CameraP from '../screens/CameraP';
+import ProfileScreen from '../screens/ProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import UserScreen from '../screens/UserScreen';
 
 const Stack = createStackNavigator(); 
 
 export function HomeStack() {
     return (
-        <Stack.Navigator 
+        <Stack.Navigator
+            initialRouteName='Index'
             screenOptions={{
                 headerShown: false
             }}
         >
             <Stack.Screen
-                name='Home' 
-                component={Home}
+                name='Index' 
+                component={Index}
             />
             <Stack.Screen
                 name='Recipe' 
-                component={Recipe}
+                component={RecipeScreen}
+            />
+
+            <Stack.Screen
+                name='Edit' 
+                component={EditScreen}
             />
             <Stack.Screen
                 name='Search' 
-                component={Search}
+                component={SearchScreen}
             />
         </Stack.Navigator>
     );
@@ -41,27 +46,20 @@ export function HomeStack() {
 
 export function GalleryStack() {
     return (
-        <Stack.Navigator 
-            mode='modal'
+        <Stack.Navigator
+            initialRouteName='GalleryS'
             screenOptions={{
                 headerShown: false
             }}
         >
             <Stack.Screen
-                name='Gallery' 
-                component={Gallery}
+                name='GalleryS' 
+                component={GalleryScreen}
             />
+            
             <Stack.Screen
-                name='Create' 
-                component={Create}
-            />
-            <Stack.Screen
-                name='Edit' 
-                component={Edit}
-            />
-            <Stack.Screen
-                name='CamScreen' 
-                component={CamScreen}
+                name='Add' 
+                component={CreateScreen}
             />
         </Stack.Navigator>
     );
@@ -70,14 +68,14 @@ export function GalleryStack() {
 export function SettingStack () {
     return (
         <Stack.Navigator 
-            // mode='modal'
+            initialRouteName='Profile'
             screenOptions={{
                 
             }}
         >
             <Stack.Screen
                 name='Profile' 
-                component={Profile}
+                component={ProfileScreen}
                 options={{
                     headerLeft: null
                 }}
@@ -85,15 +83,15 @@ export function SettingStack () {
             />
             <Stack.Screen
                 name='EditProfile' 
-                component={EditProfile}
+                component={EditProfileScreen}
             />
-            <Stack.Screen
+            {/* <Stack.Screen
                 name='CameraP' 
                 component={CameraP}
                 options={{
                     headerTintColor: COLORS.transparentBlack1
                 }}
-            />
+            /> */}
         </Stack.Navigator>
     )
 }
@@ -101,14 +99,13 @@ export function SettingStack () {
 export function ChefStack () {
     return (
         <Stack.Navigator 
-            mode='modal'
             screenOptions={{
                 headerShown: false
             }}
         >
             <Stack.Screen
                 name='Chef' 
-                component={Chef}
+                component={UserScreen}
             />
         </Stack.Navigator>
     )

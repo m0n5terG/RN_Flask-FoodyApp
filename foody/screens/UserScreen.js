@@ -11,6 +11,7 @@ import {
     View
 } from 'react-native';
 import axios from 'axios';
+import moment from 'moment';
 import { useSelector } from "react-redux";
 import { API, API_GET_USERS, API_IMAGE_URL } from "../constants/API";
  
@@ -19,7 +20,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 
 
-const Chef = ({ navigation }) => {
+const UserScreen = ({ navigation }) => {
 
     const token = useSelector((state) => state.auth.token);
     const [ user, setUser ] = useState([]);
@@ -42,8 +43,9 @@ const Chef = ({ navigation }) => {
             const response = await axios.get(API + API_GET_USERS, {
                 headers: { Authorization: `JWT ${token}` },
             })
-            console.log(response.data);
+            // console.log(response.data);
             setUser(response.data.users);
+            console.log(response.data.users);
             return "completed"
 
         } catch (error) {
@@ -120,6 +122,7 @@ const Chef = ({ navigation }) => {
                         style={{
                             marginLeft: 25,
                             color: theme.COLORS.gray,
+                            fontStyle: 'italic',
                             ...theme.FONTS.h3
                         }}
                     >
@@ -128,11 +131,22 @@ const Chef = ({ navigation }) => {
                     <Text
                         style={{
                             marginLeft: 25,
-                            color: theme.COLORS.gray,
+                            color: theme.COLORS.gray3,
+                            fontStyle: 'italic',
                             ...theme.FONTS.h3
                         }}
                     >
-                        { item.date_joined }
+                        {/* { item.date_joined } */}
+                        {`Joined since ${moment(item.date_joined).format('DD-MM-YY')}`}
+                    </Text>
+                    <Text
+                        style={{
+                            marginLeft: 25,
+                            color: theme.COLORS.blue,
+                            ...theme.FONTS.h3
+                        }}
+                    >
+                        {item.blogs.length} posts
                     </Text>
                 </View>
             </View>
@@ -178,4 +192,4 @@ const Chef = ({ navigation }) => {
     );
 }
 
-export default Chef;
+export default UserScreen;

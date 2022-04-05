@@ -9,6 +9,10 @@ import {
     TouchableOpacity,
     RefreshControl
 } from 'react-native';
+import {
+    Avatar,
+    FAB
+ } from 'react-native-paper';
 import axios from 'axios';
 import { API, API_GET } from "../constants/API";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +22,7 @@ import TreadingCard from '../components/TreadingCard';
 import * as theme from '../style/theme';
 
 
-const Home = ({ navigation, route }) => {
+const HomeScreen = ({ navigation, route }) => {
 
     const username = useSelector((state) => state.accountPref.username)
     const token = useSelector((state) => state.auth.token);
@@ -30,7 +34,6 @@ const Home = ({ navigation, route }) => {
 
     useEffect(() => {
         console.log("Setting up nav listener");
-        // Check for when we come back to this screen
         const removeListener = navigation.addListener("focus", () => {
             console.log("Running nav listener");
             getPosts();
@@ -74,10 +77,10 @@ const Home = ({ navigation, route }) => {
                 }}
                 >
                     <Text
-                    style={{
-                        color: theme.COLORS.darkGreen,
-                        ...theme.FONTS.h2
-                    }}
+                        style={{
+                            color: theme.COLORS.darkGreen,
+                            ...theme.FONTS.h2
+                        }}
                     >
                         Hello {username}
                     </Text>
@@ -135,6 +138,7 @@ const Home = ({ navigation, route }) => {
                     }}
                     placeholderTextColor={theme.COLORS.gray}
                     placeholder="Search Recipes"
+                    // onChangeText={navigation.navigate('Search')}
                 />
             </View>
         )
@@ -161,7 +165,6 @@ const Home = ({ navigation, route }) => {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
-                        console.log(posts.author); 
                         return (
                             <TreadingCard
                                 containerStyle={{
@@ -174,6 +177,7 @@ const Home = ({ navigation, route }) => {
                         )  
                     }}
                 />
+                
             </View>
         )
     }
@@ -198,7 +202,7 @@ const Home = ({ navigation, route }) => {
                     Categories
                 </Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Recipe')}
+                    onPress={() => navigation.navigate('GalleryS')}
                 >
                     <Text
                         style={{
@@ -263,4 +267,4 @@ const Home = ({ navigation, route }) => {
     )
 }
 
-export default Home;
+export default HomeScreen;

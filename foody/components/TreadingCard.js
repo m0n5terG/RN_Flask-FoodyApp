@@ -13,6 +13,7 @@ import {
  import * as theme from '../style/theme';
 
  const RecipeCardDetails = ({ recipeItem }) => {
+    //  console.log(recipeItem.title)
      return (
          <View
             style={{
@@ -79,7 +80,7 @@ import {
                 style={{
                     ...styles.blurContainer,
                     width: '100%',
-                    backgroundColor: theme.COLORS.transparentGray2
+                    backgroundColor: theme.COLORS.transparentGray
                 }}
             >
                 <RecipeCardDetails 
@@ -130,7 +131,7 @@ import {
                         ...theme.FONTS.h4
                     }}
                 >
-                    {recipeItem.category.name}
+                    {recipeItem.category}
                 </Text>
             </View>
             <RecipeCardInfo 

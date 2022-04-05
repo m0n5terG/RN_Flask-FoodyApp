@@ -11,10 +11,7 @@ import {
 } from 'react-native';
 import {
     Avatar,
-    // Card,
-    // Title,
-    // Paragraph,
-    // List
+    FAB,
  } from 'react-native-paper';
 import axios from 'axios';
 import { API, API_GET, API_IMAGE_URL } from "../constants/API";
@@ -25,8 +22,7 @@ import { BlurView } from 'expo-blur';
 import * as theme from '../style/theme';
 
 
-
-const Gallery = ({ navigation, route }) => {
+const GalleryScreen = ({ navigation, route }) => {
 
     const token = useSelector((state) => state.auth.token);
     const username = useSelector((state) => state.accountPref.username)
@@ -37,10 +33,8 @@ const Gallery = ({ navigation, route }) => {
     
 
     useEffect(() => {
-        // console.log("Setting up nav listener");
         
-        const removeListener = navigation.addListener("focus", () => {
-            // console.log("Running nav listener");
+        const removeListener = navigation.addListener("focus", () => { 
             getPosts();
         });
             getPosts();
@@ -56,7 +50,6 @@ const Gallery = ({ navigation, route }) => {
            
             // console.log(response.data);
             setPosts(response.data.allblogs);
-            
             
             return "completed"
 
@@ -103,7 +96,7 @@ const Gallery = ({ navigation, route }) => {
                     </Text>
                 </View>
                 <TouchableOpacity
-                    onPress={() => consolelog("Profile")}
+                    onPress={() => navigation.navigate("Profile")}
                 >
                     <Image
                         source={{ uri: profileImage }}
@@ -122,22 +115,22 @@ const Gallery = ({ navigation, route }) => {
     function renderItem({ item }) {
         return (
             <TouchableOpacity
-            style={{
-                height: 350,
-                width: 400,
-                marginTop: theme.SIZES.radius,
-                marginBottom: 20,
-                borderRadius: theme.SIZES.radius,
+                style={{
+                    height: 350,
+                    width: "100%",
+                    marginTop: theme.SIZES.radius,
+                    marginBottom: 20,
+                    borderRadius: theme.SIZES.radius,
             }}
-            // onPress={'null'}
+                onPress={() => navigation.navigate("Recipe", {recipe: item})}
             >
                 <Image
                     source={{ uri: API_IMAGE_URL + item.image }}
                     resizeMode="cover"
                     style={{
                         height: 350,
-                        width:'100%',
-                        marginHorizontal: 15,
+                        width:'95%',
+                        marginHorizontal: 10,
                         borderRadius: theme.SIZES.radius 
                 }}
                 />
@@ -148,7 +141,7 @@ const Gallery = ({ navigation, route }) => {
                         left: 20,
                         paddingHorizontal: theme.SIZES.radius,
                         paddingVertical: 5,
-                        backgroundColor: theme.COLORS.transparentGray2,
+                        backgroundColor: theme.COLORS.transparentBlack5,
                         borderRadius: theme.SIZES.radius
                     }}
                  >
@@ -174,7 +167,7 @@ const Gallery = ({ navigation, route }) => {
                     }}
                 >
                 <Avatar.Image
-                    source={{ uri: API_IMAGE_URL + item.profileImage }}
+                    source={require('../assets/default.jpg')}
                     size={45}
                     />
                 </View>
@@ -191,14 +184,12 @@ const Gallery = ({ navigation, route }) => {
                     
                     <Text
                         style={{
-                            color: theme.COLORS.white,
+                            color: theme.COLORS.gray3,
+                            fontStyle: 'italic',
                             ...theme.FONTS.h4
                         }}
                     >
-                        {`Shared: ${moment(
-                               item.created_at,
-                               'YYYYMMDD',
-                           ).fromNow()}`}
+                        {`Shared ${moment(item.created_at).fromNow()}`}
                        {/* Shared on: {new Date(item.created_at * 1000).toString() + ' ' + new Date(item.created_at * 1000).toLocaleTimeString('en-US')} */}
                         {/* Shared by: {item.author} */}
                     </Text>
@@ -242,11 +233,22 @@ const Gallery = ({ navigation, route }) => {
                 //       onRefresh={onRefresh}
                 //     />
                 // }
-            />           
+            />
+            <FAB
+                style={{
+                    position: 'absolute',
+                    margin: 16,
+                    bottom: 90,
+                    right: 10
+                }}
+                small
+                icon="plus"
+                onPress={() => navigation.navigate("Add")}
+                />           
        
         </SafeAreaView>
     )
 }
 
-export default Gallery;
+export default GalleryScreen;
 

@@ -29,7 +29,7 @@ if (
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-function LoginSignup({ navigation }) {
+function LoginSignupScreen({ navigation }) {
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -62,7 +62,7 @@ function LoginSignup({ navigation }) {
             setPassword("");
             setLoading(false);
 
-            navigation.navigate("Home");
+            navigation.navigate("AppStack");
 
             } catch (error) {
             setLoading(false);
@@ -329,4 +329,4 @@ function LoginSignup({ navigation }) {
     )
 }
 
-export default LoginSignup;
+export default LoginSignupScreen;

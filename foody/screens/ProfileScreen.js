@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { 
     ActivityIndicator,
     FlatList,
@@ -25,7 +25,12 @@ import TreadingCard from '../components/TreadingCard';
 
 import * as theme from '../style/theme';
 
-function Profile ({ navigation, route }) {
+const wait = (timeout) => {
+    return new Promise(resolve =>
+        setTimeout(resolve, timeout));
+}
+
+function ProfileScreen ({ navigation, route }) {
     
     const username = useSelector((state) => state.accountPref.username);
     const profileImage = useSelector((state) => state.accountPref.profileImage);
@@ -35,13 +40,19 @@ function Profile ({ navigation, route }) {
     
     const dispatch = useDispatch();
 
-    // const styles = { ...commonStyles, ...isDark ? darkStyles : lightStyles };
+    const [refreshing, setRefreshing] = useState(false);
 
-    const picSize = new Animated.Value(0);
-    const sizeInterpolation = {
-        inputRange: [0, 0.5, 1],
-        outputRange: [200, 300, 200]
-    }  
+    // const picSize = new Animated.Value(0);
+    // const sizeInterpolation = {
+    //     inputRange: [0, 0.5, 1],
+    //     outputRange: [200, 300, 200]
+    // }
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() =>
+        setRefreshing(false));
+    }, []);
 
     useEffect(() => {
         navigation.setOptions({
@@ -57,21 +68,22 @@ function Profile ({ navigation, route }) {
         dispatch(logOutAction())
         navigation.navigate("Landing");
     }
-
+    
     // function switchMode() {
     //   dispatch(changeModeAction())
     //   console.log(isDark)
     // }
 
-    function changePicSize() {
-        Animated.loop(
-            Animated.timing(picSize, {
-                toValue: 1,
-                duration: 1000,
-                useNativeDriver: false
-            }),
-        ).start()
-    }
+    // function changePicSize() {
+    //     Animated.loop(
+    //         Animated.timing(picSize, {
+    //             toValue: 1,
+    //             duration: 1000,
+    //             useNativeDriver: false
+    //         }),
+    //     ).start()
+    // }
+
     function renderTreadingSection(){
         return (
             <View
@@ -88,23 +100,26 @@ function Profile ({ navigation, route }) {
                     My Posting
                 </Text>
                 <FlatList
-                    data={blogs}
+                    data={blogs} 
                     horizontal
                     showsHorizontalScrollIndicator={true}
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
-                        console.log("item is",item);
+                        // console.log(item.id);
                         return (
+                            <View>
                             <TreadingCard
                                 containerStyle={{
                                     marginLeft: index == 0 ? theme.SIZES.padding : 0
                                 }}
                                 recipeItem={item}
-                                onPress={() => navigation.navigate("Recipe", {recipe: item})}
+                                onPress={() => navigation.navigate('Recipe', {recipe: item})}
                             />
+                            </View>
                         )
                     }}
                 />
+                
             </View>
         )
     }
@@ -116,7 +131,16 @@ function Profile ({ navigation, route }) {
             backgroundColor: theme.COLORS.white
           }}
       >
-            <ScrollView>
+            <ScrollView
+                style={{
+                    flex: 1
+                }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}   
+                />}
+            >
                 <View style={{ alignSelf: "center", marginTop: 10 }}>
                     <View style={{
                         width: 200,
@@ -160,7 +184,7 @@ function Profile ({ navigation, route }) {
                 }}>
                     <Text style={{ color: theme.COLORS.blue, ...theme.FONTS.h1 }}>{username}</Text>
                     <Text style={{ color: theme.COLORS.gray3, ...theme.FONTS.subText }}>Date Joined</Text>
-                    <Text style={{ color: theme.COLORS.lightGray2, ...theme.FONTS.body4 }}>{moment(date_joined).format('Do MMM YYYY')}</Text>
+                    <Text style={{ color: theme.COLORS.lightGray2, ...theme.FONTS.body4 }}>{moment(date_joined).format("DD-MM-YYYY")}</Text>
                 </View>
 
                 <View 
@@ -169,15 +193,15 @@ function Profile ({ navigation, route }) {
                         alignSelf: 'center',
                         marginTop: 10
                     }}>
-                    <View style={styles.statsBox}>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={{ color: theme.COLORS.gray, ...theme.FONTS.h2 }}>{count}</Text>
                         <Text style={{ color: theme.COLORS.gray3, ...theme.FONTS.subText }}>Posts</Text>
                     </View>
-                    <View style={[styles.statsBox, { borderColor: "#DFD8C8", borderLeftWidth: 1, borderRightWidth: 1 }]}>
+                    <View style={{ flex: 1, alignItems: 'center', borderColor: "#DFD8C8", borderLeftWidth: 1, borderRightWidth: 1 }}>
                         <Text style={{ color: theme.COLORS.gray, ...theme.FONTS.h2 }}>45,844</Text>
                         <Text style={{ color: theme.COLORS.gray3, ...theme.FONTS.subText }}>Followers</Text>
                     </View>
-                    <View style={styles.statsBox}>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={{ color: theme.COLORS.gray, ...theme.FONTS.h2 }}>302</Text>
                         <Text style={{ color: theme.COLORS.gray3, ...theme.FONTS.subText }}>Following</Text>
                     </View>
@@ -201,11 +225,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignItems: "center",
         justifyContent: "center"
-    },
-    statsBox: {
-        alignItems: "center",
-        flex: 1
-    },
+    }
 });
 
-export default Profile;
+export default ProfileScreen;

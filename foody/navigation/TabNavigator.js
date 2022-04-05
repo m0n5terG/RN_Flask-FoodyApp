@@ -9,13 +9,12 @@ import { ChefStack } from "./StackNavigator";
 import * as theme from '../style/theme';
 import TabIcon from "../components/TabIcon";
 
-
 const Tab = createBottomTabNavigator()
 
-const MainStack = () => {
+const AppStack = () => {
     return (
         <Tab.Navigator
-            screenOptions={({route}) => ({
+            screenOptions={({navigation, route}) => ({
                 headerShown: false,
                 tabBarShowLabel: false,
                 tabBarStyle: {
@@ -31,7 +30,7 @@ const MainStack = () => {
             })}
         >
             <Tab.Screen
-                name="Index"
+                name="Home"
                 component={HomeStack}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
@@ -55,7 +54,7 @@ const MainStack = () => {
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name="Settings"
                 component={SettingStack}
                 options={{
                     tabBarIcon: ({ focused }) => <TabIcon focused=
@@ -66,4 +65,4 @@ const MainStack = () => {
     )
 }
 
-export default MainStack;
+export default AppStack;

@@ -12,7 +12,7 @@ import * as theme from '../style/theme';
 import CustomButtom from '../components/CustomButton';
 // import LoginSignup from '../screens/Login'
 
-const Landing = ({ navigation }) => {
+const LandingScreen = ({ navigation }) => {
 
     function renderHeader() {
         return (
@@ -118,4 +118,4 @@ const Landing = ({ navigation }) => {
     )
 }
 
-export default Landing;
+export default LandingScreen;
