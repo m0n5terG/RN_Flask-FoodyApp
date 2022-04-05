@@ -52,7 +52,7 @@ const UserScreen = ({ navigation }) => {
             console.log(error)
             console.log(error.response.data);
             if (error.response.data.error = "Invalid token") {
-                navigation.navigate("SignInSignUp");
+                navigation.navigate("LoginSignUp");
             }
         }
     }

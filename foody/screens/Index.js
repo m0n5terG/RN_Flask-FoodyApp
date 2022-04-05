@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation, route }) => {
             console.log(error)
             console.log(error.response.data);
             if (error.response.data.error = "Invalid token") {
-                navigation.navigate("SignInSignUp");
+                navigation.navigate("LoginSignUp");
             }
         }
     }

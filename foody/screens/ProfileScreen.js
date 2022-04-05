@@ -43,6 +43,7 @@ function ProfileScreen ({ navigation, route }) {
     const dispatch = useDispatch();
 
     const [refreshing, setRefreshing] = useState(false);
+    const [blogData, setBlogData] = useState();
 
     // const picSize = new Animated.Value(0);
     // const sizeInterpolation = {
@@ -51,21 +52,15 @@ function ProfileScreen ({ navigation, route }) {
     // }
 
     // useEffect(() => {
-    //     console.log("Setting up nav listener");
-    //     const removeListener = navigation.addListener("focus", () => {
-    //         console.log("Running nav listener");
-    //         useDispatch();
-    //     });
-    //     useDispatch();
-    //     return removeListener;
+    //     setBlogData(state.accountPref.blogs.data)
     // }, []);
 
-    async function onRefresh() {
-    setRefreshing(true);
-    const response = await getPosts()
-    console.log(response.data);
-    setRefreshing(false);
-  }
+//     async function onRefresh() {
+//     setRefreshing(true);
+//     const response = await getPosts()
+//     console.log(response.data);
+//     setRefreshing(false);
+//   }
 
 
     useEffect(() => {
@@ -149,11 +144,11 @@ function ProfileScreen ({ navigation, route }) {
                 style={{
                     flex: 1
                 }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}   
-                />}
+                // refreshControl={
+                //     <RefreshControl
+                //         refreshing={refreshing}
+                //         onRefresh={onRefresh}   
+                // />}
             >
                 <View style={{ alignSelf: "center", marginTop: 10 }}>
                     <View style={{

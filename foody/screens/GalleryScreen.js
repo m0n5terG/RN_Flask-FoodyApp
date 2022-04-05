@@ -57,7 +57,7 @@ const GalleryScreen = ({ navigation, route }) => {
             console.log(error)
             console.log(error.response.data);
             if (error.response.data.error = "Invalid token") {
-                navigation.navigate("SignInSignUp");
+                navigation.navigate("LoginSignUp");
             }
         }
     }
@@ -174,9 +174,9 @@ const GalleryScreen = ({ navigation, route }) => {
                 <View
                     style={{
                         position: 'absolute',
-                        width: '100%',
+                        width: '98%',
                         bottom: 0,
-                        left: 250,
+                        alignItems: 'flex-end',
                         paddingHorizontal: theme.SIZES.radius,
                         paddingVertical: 5,
                     }}
@@ -184,7 +184,9 @@ const GalleryScreen = ({ navigation, route }) => {
                     
                     <Text
                         style={{
-                            color: theme.COLORS.gray3,
+                            backgroundColor: theme.COLORS.transparentBlack7,
+                            borderRadius: 25,
+                            color: theme.COLORS.white2,
                             fontStyle: 'italic',
                             ...theme.FONTS.h4
                         }}

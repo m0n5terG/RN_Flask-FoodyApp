@@ -102,15 +102,15 @@ const RecipeScreen = ({ navigation, route }) => {
                 setSelectedRecipe(recipe) 
             }, [])
 
-            useEffect(() => {
-                console.log("Setting up nav listener");
-                const removeListener = navigation.addListener("focus", () => {
-                    console.log("Running nav listener");
-                    getSinglePosts();
-                });
-                getSinglePosts();
-                return removeListener;
-            }, []);
+            // useEffect(() => {
+            //     console.log("Setting up nav listener");
+            //     const removeListener = navigation.addListener("focus", () => {
+            //         console.log("Running nav listener");
+            //         getSinglePosts();
+            //     });
+            //     getSinglePosts();
+            //     return removeListener;
+            // }, []);
 
     async function deletePost() {
         const id = selectedRecipe?.id
@@ -119,6 +119,8 @@ const RecipeScreen = ({ navigation, route }) => {
             const response = await axios.delete(API + API_DELETE + id, { 
                 headers: { Authorization: `JWT ${token}` }, });
             console.log(response)
+
+            navigation.navigate('GalleryS')
             // setSelectedRecipe(post.filter((item) => item.id !== id));
                     
             } catch (error) {
@@ -126,26 +128,25 @@ const RecipeScreen = ({ navigation, route }) => {
             }
         }
 
-        async function getSinglePosts() {
-
-            const id = selectedRecipe?.id
-            console.log(id)
-            try {
-                const response = await axios.get(API + API_GET_SP + id, {
-                    headers: { Authorization: `JWT ${token}` },
-                })
-                console.log(response.data);
-                setSelectedRecipe(response.data.single_blogs);
-                return "completed"
+        // async function getSinglePosts() {
+        //     const id = selectedRecipe?.id
+        //     console.log(id)
+        //     try {
+        //         const response = await axios.get(API + API_GET_SP + id, {
+        //             headers: { Authorization: `JWT ${token}` },
+        //         })
+        //         console.log(response.data);
+        //         setSelectedRecipe(response.data.single_blogs);
+        //         return "completed"
     
-            } catch (error) {
-                console.log(error)
-                console.log(error.response.data);
-                if (error.response.data.error = "Invalid token") {
-                    navigation.navigate("SignInSignUp");
-                }
-            }
-        }
+        //     } catch (error) {
+        //         console.log(error)
+        //         console.log(error.response.data);
+        //         if (error.response.data.error = "Invalid token") {
+        //             navigation.navigate("LoginSignUp");
+        //         }
+        //     }
+        // }
         
     
 

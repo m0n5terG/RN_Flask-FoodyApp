@@ -68,7 +68,7 @@ const EditScreen = ({ navigation, route }) => {
             console.log("Update success!");
             console.log(response.data);
  
-            navigation.push('Recipe', { recipe: recipe });
+            navigation.navigate('GalleryS');
         } 
         catch (error) {
         console.log(error.response);
