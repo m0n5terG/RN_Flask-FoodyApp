@@ -9,10 +9,10 @@ import {
     TouchableOpacity,
     RefreshControl
 } from 'react-native';
-import {
-    Avatar,
-    FAB
- } from 'react-native-paper';
+// import {
+//     Avatar,
+//     FAB
+//  } from 'react-native-paper';
 import axios from 'axios';
 import { API, API_GET } from "../constants/API";
 import { useDispatch, useSelector } from "react-redux";

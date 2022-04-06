@@ -45,7 +45,7 @@ const RecipeAuthorDetails =({ selectedRecipe }) => {
                     }}
                 >
                 <Avatar.Image
-                    source={require('../assets/default.jpg')}
+                    source={{ uri: API_IMAGE_URL + selectedRecipe?.profileImage}}
                     size={45}
                     />
                 </View>
@@ -93,6 +93,7 @@ const RecipeScreen = ({ navigation, route }) => {
     const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [content, setContent] = useState("");
+    const [errorText, setErrorText] = useState("");
     const token = useSelector((state) => state.auth.token);
 
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -114,7 +115,7 @@ const RecipeScreen = ({ navigation, route }) => {
 
     async function deletePost() {
         const id = selectedRecipe?.id
-            console.log(id)      
+            // console.log(id)      
         try {
             const response = await axios.delete(API + API_DELETE + id, { 
                 headers: { Authorization: `JWT ${token}` }, });
@@ -124,7 +125,10 @@ const RecipeScreen = ({ navigation, route }) => {
             // setSelectedRecipe(post.filter((item) => item.id !== id));
                     
             } catch (error) {
-            console.log(error)
+                console.log(error.response.data);
+                if ((error.response.status = 401)) {
+                    alert("You're not authorised!")
+                }
             }
         }
 
@@ -558,7 +562,7 @@ const RecipeScreen = ({ navigation, route }) => {
                                         <Text
                                             style={{
                                                 ...theme.FONTS.body5,
-                                                color: theme.COLORS.gray
+                                                color: theme.COLORS.gray,
                                             }}
                                         >
                                             {`Posted on ${moment(item.created_at).format('DD-MM-YY')}`}

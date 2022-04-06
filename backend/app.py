@@ -63,15 +63,16 @@ class Blog(db.Model):
     category = db.Column(db.String(20))
     instruction = db.Column(db.Text)
     ingredients = db.Column(db.String(150))
-    serving = db.Column(db.Integer)
+    serving = db.Column(db.String)
     duration = db.Column(db.String(10))
     image = db.Column(db.String(36))
+    profileImage = db.Column(db.String(36))
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     # ingredients = db.relationship('Ingredient', secondary=ingredient_blog, backref=db.backref('blogs_associated', lazy="dynamic"))
     # category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     # category = db.relationship('Category', backref = db.backref('blogs', lazy=True)) 
-    author = db.Column(db.Integer, db.ForeignKey('user.username', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.String, db.ForeignKey('user.username', ondelete='CASCADE'), nullable=False)
     comments = db.relationship('Comment', backref='post_comment', cascade='all,delete-orphan', lazy=True)
     likes = db.relationship('Like', backref='post', cascade='all,delete-orphan', lazy=True)   
 
@@ -128,7 +129,7 @@ class BlogSchema(SQLAlchemyAutoSchema):
         ordered: True
         
         fields = ('id', 'title', 'instruction', 'ingredients', 'image', 'author', 'category', 'likes', 
-                  'serving', 'duration', 'created_at', 'updated_at', 'comments')
+                  'serving', 'duration', 'created_at', 'updated_at', 'comments', 'profileImage')
         
 
 class UserSchema(SQLAlchemyAutoSchema):
@@ -248,7 +249,7 @@ def add_blog():
     image = imageFileName
     
     new_blog = Blog(title=data["title"],category=data["category"],instruction=data["instruction"],serving=data["serving"],image=imageFileName,
-                    ingredients=data["ingredients"],duration=data["duration"],author=current_identity.username)
+                    ingredients=data["ingredients"],duration=data["duration"],author=current_identity.username, profileImage=current_identity.profileImage)
         
     
     # for ingredient in data["ingredients"]:
@@ -348,14 +349,17 @@ def update_blog(id):
 @app.route('/delete_blog/<int:id>', methods=["DELETE"])
 @jwt_required()
 def delete_blog(id):
+    
     blog = Blog.query.filter_by(id=id).first()
     # author = current_identity.username
-    # if author == blog.author:
-    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], blog.image))
-    db.session.delete(blog)
-    db.session.commit()
-    
-    return jsonify({"Message": "Post Deleted!"}),204
+    if blog.author != current_identity.username:
+        return jsonify({ "Error": "User not authorised!" }),401
+    else:
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], blog.image))
+        db.session.delete(blog)
+        db.session.commit()
+        
+        return jsonify({"Message": "Post Deleted!"}),204
     # else:
     #     return jsonify({ "Error": "user not authorised!" }),401
 

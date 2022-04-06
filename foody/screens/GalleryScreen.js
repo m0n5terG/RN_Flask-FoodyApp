@@ -48,7 +48,7 @@ const GalleryScreen = ({ navigation, route }) => {
                 headers: { Authorization: `JWT ${token}` },
             });
            
-            // console.log(response.data);
+            // console.log(response.data.allblogs.profileImage);
             setPosts(response.data.allblogs);
             
             return "completed"
@@ -167,7 +167,7 @@ const GalleryScreen = ({ navigation, route }) => {
                     }}
                 >
                 <Avatar.Image
-                    source={require('../assets/default.jpg')}
+                    source={{ uri: API_IMAGE_URL + item.profileImage}}
                     size={45}
                     />
                 </View>
