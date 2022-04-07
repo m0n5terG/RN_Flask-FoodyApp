@@ -53,7 +53,7 @@ import {
                     ...theme.FONTS.body4
                 }}
             >
-                 {recipeItem.duration} | {recipeItem.serving} Serving
+                 {recipeItem.duration} mins | {recipeItem.serving} Serving
             </Text>
          </View>
      )

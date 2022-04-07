@@ -233,7 +233,7 @@ function LoginSignupScreen({ navigation }) {
                                 }>
                                     {" "} {isLogin ? "Log In" : "Sign Up"} {" "}
                             </Text>
-                            </TouchableOpacity>
+                        </TouchableOpacity>
                             {loading ? (
                                 <ActivityIndicator color="#0000ff" style={{ marginLeft: 10 }} />                                
                                 ) : (

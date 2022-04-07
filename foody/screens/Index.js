@@ -95,7 +95,7 @@ const HomeScreen = ({ navigation, route }) => {
                     </Text>
                 </View>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("Profile")}
+                    onPress={() => navigation.navigate("Settings", { screen: "Profile" })}
                 >
                     <Image
                         source={{ uri: profileImage }}

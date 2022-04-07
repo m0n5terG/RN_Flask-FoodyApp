@@ -203,7 +203,7 @@ const CreateScreen = ({ navigation }) => {
                 <TextInput
                     label="Title"
                     value={title}
-                    autoCapitalize={true}
+                    // autoCapitalize={true}
                     onChangeText={text => setTitle(text)}
                     style={{
                         marginBottom: 10
@@ -212,7 +212,7 @@ const CreateScreen = ({ navigation }) => {
                 <TextInput
                     label="Category"
                     value={category}
-                    autoCapitalize={true}
+                    // autoCapitalize={true}
                     onChangeText={text => setCategory(text)}
                     style={{
                         marginBottom: 10

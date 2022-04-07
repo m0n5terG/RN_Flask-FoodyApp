@@ -43,7 +43,7 @@ export function HomeStack() {
         </Stack.Navigator>
     );
 };
-
+ 
 export function GalleryStack() {
     return (
         <Stack.Navigator
@@ -84,6 +84,9 @@ export function SettingStack () {
             <Stack.Screen
                 name='EditProfile' 
                 component={EditProfileScreen}
+                // options={{
+                //     headerLeft: null
+                // }}
             />
             {/* <Stack.Screen
                 name='CameraP' 

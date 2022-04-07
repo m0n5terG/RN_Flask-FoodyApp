@@ -65,7 +65,7 @@ const RecipeAuthorDetails =({ selectedRecipe }) => {
                         marginRight: 20
                     }}
                 >
-                    <Text style={{color: theme.COLORS.lightGray2, ...theme.FONTS.body4}}>Posted:</Text>
+                    <Text style={{color: theme.COLORS.lightGray2, ...theme.FONTS.body4}}>Posted on:</Text>
                     <Text style={{color: theme.COLORS.white2, ...theme.FONTS.body3}}>{moment(selectedRecipe?.created_at).fromNow()}</Text>
                 </View>
         </View>
@@ -99,19 +99,9 @@ const RecipeScreen = ({ navigation, route }) => {
     const scrollY = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-                let { recipe } = route.params
-                setSelectedRecipe(recipe) 
-            }, [])
-
-            // useEffect(() => {
-            //     console.log("Setting up nav listener");
-            //     const removeListener = navigation.addListener("focus", () => {
-            //         console.log("Running nav listener");
-            //         getSinglePosts();
-            //     });
-            //     getSinglePosts();
-            //     return removeListener;
-            // }, []);
+        let { recipe } = route.params
+        setSelectedRecipe(recipe) 
+    }, [])
 
     async function deletePost() {
         const id = selectedRecipe?.id
@@ -122,7 +112,6 @@ const RecipeScreen = ({ navigation, route }) => {
             console.log(response)
 
             navigation.navigate('GalleryS')
-            // setSelectedRecipe(post.filter((item) => item.id !== id));
                     
             } catch (error) {
                 console.log(error.response.data);
@@ -332,8 +321,7 @@ const RecipeScreen = ({ navigation, route }) => {
             <View
                 style={{
                     flexDirection: 'row',
-                    // marginTop: 10,
-                    height: 280,
+                    height: 230,
                     width: theme.SIZES.width,
                     paddingHorizontal: 20,
                     paddingVertical: 20,
@@ -367,36 +355,43 @@ const RecipeScreen = ({ navigation, route }) => {
                         style={{
                             width: 30,
                             height: 30,
-                        }}/>
-                    
-                </TouchableOpacity> 
+                        }}
+                    />
+                </TouchableOpacity>
                 <View
                     style={{
                         flex: 1,
-                        paddingVertical: 5
-                        
+                        position: 'absolute',
+                        top: 15,
+                        left: 20    
                     }}
                 >
                     <Text style={{ ...theme.FONTS.h2, fontWeight: '900' }}>{selectedRecipe?.title}</Text>
-                    <View 
+                </View>
+                <View
+                    style={{
+                        flex: 1,   
+                    }}
+                > 
+                    {/* <View 
                         style={{
                             alignItems: 'flex-start'
                         }}
-                    >
+                    > */}
                         <Text style={{ ...theme.FONTS.h3, color: theme.COLORS.darkGreen, fontWeight: '700'}}>INSTRUCTION: </Text>
                         <Text style={{ ...theme.FONTS.h3 }}>{selectedRecipe?.instruction} </Text>
-                    </View>
-                    <View 
+                    {/* </View> */}
+                    {/* <View 
                         style={{
                             alignItems: 'flex-start',
                         }}
-                    >
+                    > */}
                         <Text style={{ ...theme.FONTS.h3, color: theme.COLORS.darkGreen, fontWeight: '700' }}>INGREDIENTS:</Text>
                         <Text style={{ ...theme.FONTS.h3 }}>{selectedRecipe?.ingredients}</Text> 
                             {/* {selectedRecipe?.ingredients.map((unit, key) => {
                                 return <Text key={key}>{unit.item}</Text>
                         })}   */}
-                    </View>
+                    {/* </View> */}
                     <Text
                         style={{
                             marginTop: 5,
@@ -408,7 +403,7 @@ const RecipeScreen = ({ navigation, route }) => {
                 <View 
                     style={{
                         alignItems: 'flex-end',
-                        width: 50,
+                        width: 50
                 }}>
                     <Image
                         source={require('../assets/icons/likes.png')}
@@ -417,7 +412,7 @@ const RecipeScreen = ({ navigation, route }) => {
                             height: 40,
                             tintColor: theme.COLORS.lightGreen1
                         }}/>
-                    {/* <Text 
+                    <Text 
                         style={{
                             alignSelf: 'center', 
                             marginTop: 10, 
@@ -425,7 +420,7 @@ const RecipeScreen = ({ navigation, route }) => {
                             ...theme.FONTS.h2}}
                     >
                         {selectedRecipe?.likes.length}
-                    </Text>  */}
+                    </Text> 
                 </View> 
             </View>
         )
@@ -462,7 +457,7 @@ const RecipeScreen = ({ navigation, route }) => {
                     style={{
                         position: 'absolute',
                         right: 10,
-                        top: 0
+                        top: -5
                     }}>
                     <Image
                         source={require('../assets/icons/addpost.png')}

@@ -15,6 +15,8 @@ import {
     TouchableWithoutFeedback 
 } from "react-native";
 import moment from 'moment';
+import axios from "axios";
+import { API, API_EDIT_PROFILE, API_GET_ME, API_IMAGE_URL, API_WHOAMI } from "../constants/API";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -34,16 +36,42 @@ const wait = (timeout) => {
 
 function ProfileScreen ({ navigation, route }) {
     
+    const user_id = useSelector((state) => state.accountPref.user_id);
+    const token = useSelector((state) => state.auth.token);
     const username = useSelector((state) => state.accountPref.username);
     const profileImage = useSelector((state) => state.accountPref.profileImage);
     const date_joined = useSelector((state) => state.accountPref.date_joined);
-    const blogs = useSelector((state) => state.accountPref.blogs);
+    // const blogs = useSelector((state) => state.accountPref.blogs);
     const count = useSelector((state) => state.accountPref.count);
     
     const dispatch = useDispatch();
 
     const [refreshing, setRefreshing] = useState(false);
-    const [blogData, setBlogData] = useState();
+    const [blogs, setBlogs] = useState();
+    const [user, setUser] = useState("");
+
+
+    async function getUser() {
+        const id = user_id
+        
+        try {
+            const response = await axios.get(API + API_WHOAMI, {
+                headers: { Authorization: `JWT ${token}` },
+            })
+            console.log(response.data.blogs);
+            setBlogs(response.data.blogs);
+            setUser(response.data)
+            console.log(user);
+            return "completed"
+
+        } catch (error) {
+            console.log(error)
+            console.log(error.response.data);
+            if (error.response.data.error = "Invalid token") {
+                navigation.navigate("LoginSignUp");
+            }
+        }
+    }
 
     // const picSize = new Animated.Value(0);
     // const sizeInterpolation = {
@@ -55,13 +83,22 @@ function ProfileScreen ({ navigation, route }) {
     //     setBlogData(state.accountPref.blogs.data)
     // }, []);
 
-//     async function onRefresh() {
-//     setRefreshing(true);
-//     const response = await getPosts()
-//     console.log(response.data);
-//     setRefreshing(false);
-//   }
+    async function onRefresh() {
+        setRefreshing(true);
+        const response = await getUser()
+        console.log(response.data);
+        setRefreshing(false);
+    }
 
+    useEffect(() => {
+        console.log("Setting up nav listener");
+        const removeListener = navigation.addListener("focus", () => {
+            console.log("Running nav listener");
+            getUser();
+        });
+        getUser();
+        return removeListener;
+    }, []);
 
     useEffect(() => {
         navigation.setOptions({
@@ -111,7 +148,7 @@ function ProfileScreen ({ navigation, route }) {
                 <FlatList
                     data={blogs} 
                     horizontal
-                    showsHorizontalScrollIndicator={true}
+                    showsHorizontalScrollIndicator={false}
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
                         // console.log(item.id);
@@ -142,15 +179,16 @@ function ProfileScreen ({ navigation, route }) {
       >
             <ScrollView
                 style={{
-                    flex: 1
+                    flex: 1,
+                    marginTop: 10
                 }}
-                // refreshControl={
-                //     <RefreshControl
-                //         refreshing={refreshing}
-                //         onRefresh={onRefresh}   
-                // />}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}   
+                />}
             >
-                <View style={{ alignSelf: "center", marginTop: 10 }}>
+                <View style={{ alignSelf: "center" }}>
                     <View style={{
                         width: 200,
                         height: 200,
@@ -159,7 +197,7 @@ function ProfileScreen ({ navigation, route }) {
                     }}>
                         <Image 
                             source={{ uri: profileImage }} 
-                            resizeMode="center"
+                            // resizeMode="center"
                             style={{
                                 flex: 1,
                                 height: undefined,
@@ -171,7 +209,7 @@ function ProfileScreen ({ navigation, route }) {
                         style={styles.add}
                     >
                         <TouchableWithoutFeedback       
-                            onPress={() => navigation.navigate("EditProfile")}
+                            onPress={() => navigation.navigate("EditProfile", {userData: user})}
                         >
                             <Ionicons 
                                 name="ios-add" 

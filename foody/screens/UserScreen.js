@@ -16,9 +16,6 @@ import { useSelector } from "react-redux";
 import { API, API_GET_USERS, API_IMAGE_URL } from "../constants/API";
  
 import * as theme from '../style/theme';
-import { ScrollView } from 'react-native-gesture-handler';
-
-
 
 const UserScreen = ({ navigation }) => {
 

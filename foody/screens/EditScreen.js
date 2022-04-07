@@ -30,7 +30,7 @@ const EditScreen = ({ navigation, route }) => {
     const [duration, setDuration] = useState("");
     const [category, setCategory] = useState("");
     const [ingredients, setIngredients] = useState(""); 
-    const [errorText, setErrorText] = useState("");
+    // const [errorText, setErrorText] = useState("");
     
     useEffect(() => {
         let { recipe } = route.params
@@ -71,8 +71,11 @@ const EditScreen = ({ navigation, route }) => {
             navigation.navigate('GalleryS');
         } 
         catch (error) {
-        console.log(error.response);
-        setErrorText(error.response.data.content);
+            console.log(error.response.data);
+            // setErrorText(error.response.data)
+            if ((error.response.status = 401)) {
+                alert("You're not authorised!")
+            }
         }    
     }
     
@@ -90,7 +93,7 @@ const EditScreen = ({ navigation, route }) => {
         var cameraResponse = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [4,3],
             quality: 1,
         });
     
@@ -111,7 +114,7 @@ const EditScreen = ({ navigation, route }) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [4,3],
             quality: 1,
         });
         
@@ -149,10 +152,10 @@ const EditScreen = ({ navigation, route }) => {
             >
                 { 
                     image == null ?
-                    (<Image source={{ uri: API_IMAGE_URL + image }} 
-                        style={{ width: '100%', height: 300}} />) :
-                    (<Image source={{ uri: "data:image/jpg;base64," + image }} 
-                        style={{ width: '100%', height: 300}} />)
+                    <Image source={{ uri: API_IMAGE_URL + image }} 
+                        style={{ width: '100%', height: 300}} /> :
+                    <Image source={{ uri: "data:image/jpg;base64," + image }} 
+                        style={{ width: '100%', height: 300}} />
                 }
                 {/* {
                     image && <Image source={{ uri: "data:image/jpg;base64," + image }} 
@@ -282,7 +285,7 @@ const EditScreen = ({ navigation, route }) => {
                 >
                     Update
                 </Button>
-                <Text 
+                {/* <Text 
                     style={{
                         marginTop: 20,
                         alignItems: 'center',
@@ -290,7 +293,7 @@ const EditScreen = ({ navigation, route }) => {
                     }}
                 >
                     {errorText}
-                </Text>
+                </Text> */}
             </View>
             
             

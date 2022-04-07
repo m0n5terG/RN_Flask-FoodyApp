@@ -87,6 +87,7 @@ class Like(db.Model):
     created_at = db.Column(db.DateTime(timezone=True), default=datetime.now)
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
     author = db.Column(db.Integer, db.ForeignKey('user.username', ondelete='CASCADE'), nullable=False)
+    profileImg = db.Column((db.String(36)))
     
 
 class Comment(db.Model):
@@ -95,6 +96,7 @@ class Comment(db.Model):
     content = db.Column(db.String(200))
     blog_id = db.Column(db.Integer, db.ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
     author = db.Column(db.Integer, db.ForeignKey('user.username', ondelete='CASCADE'), nullable=False)
+    profileImg = db.Column((db.String(36)))
     
 
 # class IngredientName(fields.Field):
@@ -109,11 +111,11 @@ class Comment(db.Model):
         
 class CommentSchema(SQLAlchemySchema):
     class Meta:
-        fields = ("id", "content", "author", "created_at")
+        fields = ("id", "content", "author", "profileImg", "created_at")
 
 class LikeSchema(ma.Schema):
     class Meta:
-        fields = ("blog_id", "author")
+        fields = ("blog_id", "author", "profileImg")
 
 # class IngredientSchema(ma.Schema):
 #     id = fields.Int()
@@ -122,8 +124,8 @@ class LikeSchema(ma.Schema):
 class BlogSchema(SQLAlchemyAutoSchema):
     # category = fields.Nested(CategorySchema(only=("name",)))
     # ingredients = fields.List(fields.Nested(IngredientSchema))
-    comments = fields.List(fields.Nested(CommentSchema(only=("content", "author", "created_at"))))
-    likes = fields.List(fields.Nested(LikeSchema(only=("author",))))
+    comments = fields.List(fields.Nested(CommentSchema(only=("content", "author", "profileImg", "created_at"))))
+    likes = fields.List(fields.Nested(LikeSchema(only=("author","profileImg"))))
     
     class Meta:
         ordered: True
@@ -179,6 +181,16 @@ jwt = JWT(app, authenticate, identity)
 def get_users():
     all_users = User.query.all()
     result = users_schema.dump(all_users)
+    
+    return jsonify({ 'users':result })
+
+
+# Get Single user
+@app.route("/users/<int:id>", methods=['GET'])
+def get_user(id):
+    user = User.query.filter_by(id=id).first_or_404()
+    
+    result = user_schema.dump(user)
     
     return jsonify({ 'users':result })
 
@@ -377,7 +389,7 @@ def like(blog_id):
         db.session.commit() 
         return jsonify({"Message": "Post like removed"})   
     else:
-        like = Like(author=current_identity.username, blog_id=blog_id)
+        like = Like(author=current_identity.username, profileImg=current_identity.profileImage, blog_id=blog_id)
         db.session.add(like)
         db.session.commit()
         
@@ -402,9 +414,10 @@ def add_comment(blog_id):
             return jsonify({"Message": "You can only comment once."})
         else:
             if post:
-                comment = Comment(
+                comment = Comment (
                     content=content, 
-                    author=current_identity.username, 
+                    author=current_identity.username,
+                    profileImg=current_identity.profileImage,
                     blog_id=blog_id
                 )
                 
