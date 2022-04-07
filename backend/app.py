@@ -229,7 +229,7 @@ def edit_user(id):
             
         imageFileName = str(uuid.uuid4()) + '.jpg'
         newProfileImage = imageFileName
-        # os.remove(os.path.join(app.config['UPLOAD_FOLDER'], user.profileImage))
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], user.profileImage))
             
         username = data['username']
         password = data['password']
